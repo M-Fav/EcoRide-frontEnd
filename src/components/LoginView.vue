@@ -25,11 +25,6 @@
       <button type="submit">Se connecter</button>
     </form>
 
-    <!-- Affichage du token ou des erreurs -->
-    <!--<div v-if="token">
-      <h2>Token d'accès :</h2>
-      <p>{{ token }}</p>
-    </div>-->
     <p v-if="error" class="error">{{ error }}</p>
 
     <!-- Bouton S'inscrire pour ouvrir la modale -->
@@ -41,42 +36,50 @@
 </template>
 
 <script>
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/authStore"; // Import du store Pinia
 import { loginUser } from "../services/backend-api.js";
 import SignInView from "@/components/SignInView.vue"; 
 
 export default {
-  data() {
-    return {
-      username: "",
-      password: "",
-      token: null,
-      error: null,
-      isModalVisible: false, 
-    };
-  },
-  components: {
-    SignInView,
-  },
-  methods: {
-    async login() {
+  components: { SignInView },
+  setup() {
+    const username = ref("");
+    const password = ref("");
+    const error = ref(null);
+    const isModalVisible = ref(false);
+    const authStore = useAuthStore();
+    const router = useRouter();
+
+    const login = async () => {
       try {
-        this.error = null;
-        const credentials = { pseudo: this.username, password: this.password };
+        error.value = null;
+        const credentials = { pseudo: username.value, password: password.value };
         const data = await loginUser(credentials);
-        console.log("Token récupéré :", data.access_token);
-        // Redirection avec le token
-        this.$router.push({ name: "token-display", query: { token: data.access_token } });
+
+        console.log("Utilisateur connecté :", data.utilisateur);
+
+        // Stocker les données utilisateur et le token dans Pinia
+        authStore.login(data.utilisateur, data.access_token);
+
+        // Redirection vers une page après connexion
+        router.push({ name: "token-display", query: { token: data.access_token } });
       } catch (errorMessage) {
         console.error("Erreur lors de la connexion :", errorMessage);
-        this.error = errorMessage;
+        error.value = "Échec de la connexion. Vérifiez vos identifiants.";
       }
-    },
-    openSignUpModal() {
-      this.isModalVisible = true;  // Afficher la modale
-    },
-    closeSignUpModal() {
-      this.isModalVisible = false;  // Fermer la modale
-    }
+    };
+
+    const openSignUpModal = () => {
+      isModalVisible.value = true;
+    };
+
+    const closeSignUpModal = () => {
+      isModalVisible.value = false;
+    };
+
+    return { username, password, error, isModalVisible, login, openSignUpModal, closeSignUpModal };
   },
 };
 </script>

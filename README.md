@@ -4,6 +4,8 @@
 ```
 npm install
 npm install vue-router
+npm install axios
+npm install pinia
 ```
 
 ### Compiles and hot-reloads for development
