@@ -1,21 +1,3 @@
-<script setup>
-import { computed } from "vue";
-import { useAuthStore } from "@/stores/authStore";
-import { useRouter } from "vue-router";
-
-const authStore = useAuthStore();
-const router = useRouter();
-
-const isAuthenticated = computed(() => authStore.isAuthenticated);
-const user = computed(() => authStore.user);
-const userPhoto = computed(() => user.value?.photo || new URL("@/assets/iconeUser.png", import.meta.url).href);
-
-const logout = () => {
-  authStore.logout();
-  router.push("/login"); // Redirige vers la page de connexion après déconnexion
-};
-</script>
-
 <template>
   <header class="header">
     <div class="header-content">
@@ -27,7 +9,7 @@ const logout = () => {
         <ul>
           <li><router-link to="/accueil">Accueil</router-link></li>
           <li><router-link to="/covoiturages">Covoiturages</router-link></li>
-          <li><router-link to="/login">Connexion/Inscription</router-link></li>
+          <!--<li><router-link to="/login">Connexion/Inscription</router-link></li>-->
           <li><router-link to="/contact">Contact</router-link></li>
         </ul>
       </nav>
@@ -36,15 +18,66 @@ const logout = () => {
       <div v-if="isAuthenticated" class="user-info">
         <img :src="userPhoto" alt="Profil" class="profile-pic" />
         <span class = "user-pseudo">{{ user.pseudo }}</span>
-       <!-- <button @click="logout"><img src="@/assets/iconeLogout.png"  alt="Déconnexion" class="logout-icon"/></button>-->
        <img  @click="logout" src="@/assets/iconeLogout.png"  alt="Déconnexion" class="logout-icon"/>
+      </div>
+
+      <!-- Si l'utilisateur n'est PAS connecté, afficher les boutons de connexion -->
+      <div v-else class="auth-buttons">
+        <button @click="openLoginModal" class="login-btn">Se connecter</button>
+        <button @click="openSignUpModal" class="signup-btn">S'inscrire</button>
+
+            <!-- Affichage de la modale si isModalVisible est true -->
+        <SignUpView v-if="isModalSignUpVisible" @close="closeSignUpModal" />
+        <LoginView v-if="isModalLoginVisible" @close="closeLoginModal" />
       </div>
     </div>
   </header>
 </template>
 
+<script setup>
+import { computed } from "vue";
+import { ref } from "vue";
+import { useAuthStore } from "@/stores/authStore";
+import { useRouter } from "vue-router";
+
+const authStore = useAuthStore();
+const router = useRouter();
+const isModalLoginVisible = ref(false);
+const isModalSignUpVisible = ref(false);
+const isAuthenticated = computed(() => authStore.isAuthenticated);
+const user = computed(() => authStore.user);
+const userPhoto = computed(() => user.value?.photo || new URL("@/assets/iconeUser.png", import.meta.url).href);
+
+const logout = () => {
+  authStore.logout();
+  router.push("/accueil"); // Redirige vers la page de connexion après déconnexion
+};
+
+const openSignUpModal = () => {
+      isModalSignUpVisible.value = true;
+    };
+
+const closeSignUpModal = () => {
+  isModalSignUpVisible.value = false;
+    };
+
+const openLoginModal = () => {
+  isModalLoginVisible.value = true;
+    };
+
+    const closeLoginModal = () => {
+      isModalLoginVisible.value = false;
+    };
+
+</script>
+
 <script>
+import SignUpView from "@/components/SignUpView.vue"; 
+import LoginView from "@/components/LoginView.vue";
+
 export default {
+  components: { SignUpView, LoginView },
+  
   name: "HeaderView",
 };
 </script>
