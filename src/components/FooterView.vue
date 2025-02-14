@@ -5,7 +5,7 @@
           <p>Adresse table donnee_entreprise</p>
         </div>
         <div class="footer-center">
-         <!--<img :src="require('@/assets/images/logoEcoride.png')" alt="Logo">--> 
+          <img alt="Vue logo" src="../assets/logoEcoRide.png" class="footerLogo" />
         </div>
         <div class="footer-right">
           <p>Email: mail table donnee_entreprise</p>

@@ -9,14 +9,31 @@
 </template>
 
 <script>
-import HeaderView from './components/HeaderView.vue';
-import FooterView from './components/FooterView.vue';
+import { provide, computed } from "vue";
+import { useAuthStore } from "@/stores/authStore";
+import HeaderView from "./components/HeaderView.vue";
+import FooterView from "./components/FooterView.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     HeaderView,
-    FooterView
+    FooterView,
+  },
+  setup() {
+    const authStore = useAuthStore();
+
+    // Définition des valeurs réactives globales
+    const isAuthenticated = computed(() => authStore.isAuthenticated);
+    const user = computed(() => authStore.getUser);
+    const userPhoto = computed(() => user.value?.photo || new URL("@/assets/iconeUser.png", import.meta.url).href);
+
+    // Partage des données aux composants enfants
+    provide("isAuthenticated", isAuthenticated);
+    provide("user", user);
+    provide("userPhoto", userPhoto);
+
+    return {};
   },
 };
 </script>
