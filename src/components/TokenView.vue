@@ -3,6 +3,10 @@
       <h1>Token d'accès</h1>
       <p v-if="token">Voici votre token : {{ token }}</p>
       <p v-else>Le token n'est pas disponible.</p>
+      <div v-if="isAuthenticated">
+      <p>Bienvenue, {{ user.prenom }} {{ user.nom }} !</p>
+    </div>
+
   
       <!-- Bouton de retour vers la page de login -->
       <button @click="goBack">Retour à la page de connexion</button>
@@ -10,7 +14,19 @@
   </template>
   
   <script>
+
+import { useAuthStore } from "@/stores/authStore";
+
   export default {
+
+    setup() {
+      const authStore = useAuthStore();
+      return {
+        user: authStore.getUser,
+        isAuthenticated: authStore.isAuthenticated,
+        logout: authStore.logout,
+      };
+   },
     data() {
       return {
         token: null, // Initialise le token
