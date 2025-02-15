@@ -21,7 +21,6 @@
 
 <script>
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/authStore";
 import { openBankingService } from "@/services/backend-api.js";
 
@@ -31,7 +30,6 @@ export default {
     const password = ref("");
     const error = ref(null);
     const authStore = useAuthStore();
-    const router = useRouter();
 
     const login = async () => {
       try {
@@ -42,7 +40,6 @@ export default {
         console.log("Utilisateur connecté :", data.utilisateur);
         
         authStore.login(data.utilisateur, data.access_token);
-        router.push("/accueil");
         closeModal();
       } catch (errorMessage) {
         console.error("Erreur lors de la connexion :", errorMessage);

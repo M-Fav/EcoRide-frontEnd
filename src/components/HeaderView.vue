@@ -27,8 +27,8 @@
         <button @click="openSignUpModal" class="signup-btn">S'inscrire</button>
 
             <!-- Affichage de la modale si isModalVisible est true -->
-        <SignUpView v-if="isModalSignUpVisible" @close="closeSignUpModal" />
-        <LoginView v-if="isModalLoginVisible" @close="closeLoginModal" />
+        <SignUpModal v-if="isModalSignUpVisible" @close="closeSignUpModal" />
+        <LoginModal v-if="isModalLoginVisible" @close="closeLoginModal" />
       </div>
     </div>
   </header>
@@ -72,11 +72,11 @@ const openLoginModal = () => {
 </script>
 
 <script>
-import SignUpView from "@/components/SignUpView.vue"; 
-import LoginView from "@/components/LoginView.vue";
+import SignUpModal from "@/components/modal/SignUpModal.vue"; 
+import LoginModal from "@/components//modal/LoginModal.vue";
 
 export default {
-  components: { SignUpView, LoginView },
+  components: { SignUpModal, LoginModal },
   
   name: "HeaderView",
 };

@@ -49,43 +49,70 @@
 </template>
 
 <script>
+import { ref } from 'vue';
+//import { authStore } from "@/stores/authStore";
+import { openBankingService } from "@/services/backend-api.js";
+
 export default {
-  data() {
-    return {
-      pseudo: "",
-      password: "",
-      email: "",
-      role: "UTILISATEUR",
-      nom: "",
-      prenom: "",
-      dateNaissance: "",
-      adresse: "",
-      telephone: "",
-      photo: null,
+  setup(_, { emit }) {
+    // Déclarations des variables réactives
+    const pseudo = ref("");
+    const password = ref("");
+    const email = ref("");
+    const nom = ref("");
+    const prenom = ref("");
+    const photo = ref(null);
+    const adresse = ref("");
+    const dateNaissance = ref("");
+
+    // Fonction pour gérer l'inscription
+    const signUp = async () => {
+      try {
+        const credentials = {
+          pseudo: pseudo.value,
+          password: password.value,
+          email: email.value,
+          nom: nom.value,
+          prenom: prenom.value,
+          photo: photo.value,
+          adresse: adresse.value
+        };
+
+const data = await openBankingService(credentials, "/register");
+        
+        console.log("Utilisateur créé :", data.utilisateur);
+        
+       // authStore.login(data.utilisateur, data.access_token);
+        closeModal();
+      } catch (errorMessage) {
+        console.error("Erreur lors de la connexion :", errorMessage);
+      }
     };
-  },
-  methods: {
-    signUp() {
-      console.log("Inscription:", {
-        pseudo: this.pseudo,
-        password: this.password,
-        email: this.email,
-        role: this.role,
-        nom: this.nom,
-        prenom: this.prenom,
-        dob: this.dob,
-        adresse: this.adresse,
-        telephone: this.telephone,
-        photo: this.photo,
-      });
-      this.closeModal();
-    },
-    handleFileUpload(event) {
-      this.photo = event.target.files[0];
-    },
-    closeModal() {
-      this.$emit("close");
-    },
+
+
+    // Fonction pour gérer le téléchargement de photo
+    const handleFileUpload = (event) => {
+      photo.value = event.target.files[0];
+    };
+
+    // Fonction pour fermer la modale
+    const closeModal = () => {
+      emit('close');
+    };
+
+    // Retourne les variables et fonctions pour les utiliser dans le template
+    return {
+      pseudo,
+      password,
+      email,
+      nom,
+      prenom,
+      adresse,
+      photo,
+      signUp,
+      handleFileUpload,
+      closeModal,
+    };
   },
 };
 </script>
@@ -101,7 +128,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* S'assurer que la modale est toujours au-dessus des autres éléments */
+  z-index: 1000;
 }
 
 .modal-content {
