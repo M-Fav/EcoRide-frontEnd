@@ -23,7 +23,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/authStore";
-import { loginUser } from "@/services/backend-api.js";
+import { openBankingService } from "@/services/backend-api.js";
 
 export default {
   setup(_, { emit }) {
@@ -37,12 +37,12 @@ export default {
       try {
         error.value = null;
         const credentials = { pseudo: pseudo.value, password: password.value };
-        const data = await loginUser(credentials);
+        const data = await openBankingService(credentials, '/login');
         
         console.log("Utilisateur connecté :", data.utilisateur);
         
         authStore.login(data.utilisateur, data.access_token);
-        router.push({ name: "token-display", query: { token: data.access_token } });
+        router.push("/accueil");
         closeModal();
       } catch (errorMessage) {
         console.error("Erreur lors de la connexion :", errorMessage);
