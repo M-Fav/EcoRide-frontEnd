@@ -31,6 +31,29 @@
           </div>
         </div>
 
+        <!-- Sélection d'une voiture sous forme de cartes avec un loader -->
+        <div class="voiture-selection">
+          <h3>Choisir une voiture</h3>
+
+          <div v-if="isLoading" class="loader-container">
+            <div class="loader"></div>
+          </div>
+
+          <div v-else class="voiture-cards">
+            <div 
+              v-for="voiture in voitures" 
+              :key="voiture.voitureId" 
+              class="voiture-card" 
+              :class="{ selected: selectedVoitureId === voiture.voitureId }"
+              @click="selectedVoitureId = voiture.voitureId"
+            >
+              <h4>{{ voiture.marque }} - {{ voiture.modele }}</h4>
+              <p><strong>Immatriculation:</strong> {{ voiture.immatriculation }}</p>
+              <p><strong>Énergie:</strong> {{ voiture.energie }}</p>
+            </div>
+          </div>
+        </div>
+
         <div class="modal-actions">
           <button type="submit" class="create-button">Créer</button>
           <button type="button" class="close-button" @click="closeModal">Annuler</button>
@@ -41,7 +64,7 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import dayjs from "dayjs";
 import { openBankingService } from "@/services/backend-api.js";
 import { useAuthStore } from "@/stores/authStore";
@@ -50,66 +73,85 @@ export default {
   props: {
     showModal: {
       type: Boolean,
-      required: true,  // Assure-toi que ce prop est bien requis
+      required: true,
     },
     title: {
       type: String,
-      required: true,  // Titre dynamique de la modal
-    }
+      required: true,
+    },
   },
   setup(props, { emit }) {
+    const authStore = useAuthStore();
+    const token = computed(() => authStore.token);
+    const utilisateurId = computed(() => authStore.user.utilisateurId);
 
-      const authStore = useAuthStore();
-      const token = computed(() => authStore.token);
-      const lieuDepart= ref("");
-      const utilisateurId= ref("");
-      const lieuArrivee= ref("");
-      const date= ref("");
-      const heureDepart= ref("");
-      const nbPlace= ref("");
-      const prixPersonne= ref("");
-      //const voitureId=ref(1);
+    // Champs du formulaire
+    const lieuDepart = ref("");
+    const lieuArrivee = ref("");
+    const date = ref("");
+    const heureDepart = ref("");
+    const nbPlace = ref("");
+    const prixPersonne = ref("");
+    const selectedVoitureId = ref(null);
+
+    // Liste des voitures & état de chargement
+    const voitures = ref([]);
+    const isLoading = ref(false);
+
+    // Récupérer les voitures de l'utilisateur avec un loader
+    const fetchVoitures = async () => {
+      isLoading.value = true; // Active le chargement
+      try {
+        const credentialsVoitures = { utilisateurId: utilisateurId.value };
+        const data = await openBankingService(credentialsVoitures, "/voitures/recupererVoituresUtilisateur", "GET", token.value);
+        voitures.value = data;
+      } catch (error) {
+        console.error("Erreur lors de la récupération des voitures :", error);
+      } finally {
+        isLoading.value = false; // Désactive le chargement après récupération
+      }
+    };
+
+    onMounted(fetchVoitures);
 
     const closeModal = () => {
       emit("close");
     };
-
 
     const createRide = async () => {
       try {
         const credentials = {
           lieuDepart: lieuDepart.value,
           lieuArrivee: lieuArrivee.value,
-          utilisateurId:1,
+          utilisateurId: utilisateurId.value,
           date: dayjs(date.value, "YYYY-MM-DD").format("DD-MM-YYYY"),
-          heureDepart: "10:00:00",
+          heureDepart: heureDepart.value ? `${heureDepart.value}:00` : null,
           nbPlace: nbPlace.value,
           prixPersonne: prixPersonne.value,
-          voitureId: 1,
+          voitureId: selectedVoitureId.value,
           statut: "ACTIF",
         };
 
-        const data = await openBankingService(credentials, "/covoiturage/createCovoiturage", 'POST', token);
-        
-        console.log("covoiturage créé :", data.value);
+        const data = await openBankingService(credentials, "/covoiturage/createCovoiturage", "POST", token.value);
+        console.log("Covoiturage créé :", data);
         closeModal();
       } catch (errorMessage) {
-        console.error("Erreur lors de la connexion :", errorMessage);
+        console.error("Erreur lors de la création du covoiturage :", errorMessage);
       }
-
-      closeModal();  // Ferme la modal après la création
     };
 
     return {
       closeModal,
       createRide,
-      lieuArrivee,
       lieuDepart,
+      lieuArrivee,
       date,
       nbPlace,
       prixPersonne,
       heureDepart,
-      utilisateurId,
+      selectedVoitureId,
+      voitures,
+      isLoading,
     };
   },
 };
@@ -133,7 +175,7 @@ export default {
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  width: 400px;
+  width: 500px;
   text-align: center;
   position: relative;
 }
@@ -176,6 +218,35 @@ input:focus {
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
+.voiture-selection {
+  margin-top: 1.5rem;
+  text-align: left;
+}
+
+.voiture-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.voiture-card {
+  padding: 15px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.voiture-card:hover {
+  background: #f4f4f4;
+}
+
+.voiture-card.selected {
+  border-color: #385c05;
+  background-color: #eaf5d3;
+}
+
 .modal-actions {
   display: flex;
   justify-content: space-between;
@@ -215,5 +286,27 @@ button {
 
 .close-button:hover {
   background-color: #cc0000;
+}
+
+/* Style du loader */
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+}
+
+.loader {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #385C05;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 </style>

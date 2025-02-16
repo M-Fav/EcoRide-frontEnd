@@ -14,11 +14,13 @@ export async function openBankingService(credentials, endpoint, method, token) {
       url: `${API_BASE_URL}${endpoint}`,
     };
 
+    console.log(`Token récupéré dans le service :  ${token}`);
+
     // Ajout de l'en-tête Authorization avec Bearer token si le token est fourni
     if (token) {
       config.headers = {
-       // Authorization: `Bearer ${token}`,
-       Authorization: 'Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJtZWhkaSIsImlhdCI6MTczOTcyNjg3NCwiZXhwIjoxNzM5ODEzMjc0fQ.ZUcWcP3MEQfrYAv3JNBSWMyizOyh57xNkQIJiB2X5Twuhza04TvFPPDUr068smpb',
+       Authorization: `Bearer ${token}`,
+       //Authorization: 'Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJtZWhkaSIsImlhdCI6MTczOTcyNjg3NCwiZXhwIjoxNzM5ODEzMjc0fQ.ZUcWcP3MEQfrYAv3JNBSWMyizOyh57xNkQIJiB2X5Twuhza04TvFPPDUr068smpb',
       };
     }
 
