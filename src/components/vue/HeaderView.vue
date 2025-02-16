@@ -189,6 +189,39 @@ a:hover::before {
   border-radius: 5px;
 }
 
+.auth-buttons {
+  position: absolute;
+  top: 5%;
+  right: 3%;
+  display: flex;
+}
+
+
+.signup-btn {
+  background-color: #EDEFE4;
+  color: #385C05;
+  cursor: pointer;
+  padding: 7px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 0.5rem;
+}
+
+.login-btn {
+  background-color: #EDEFE4;
+  color: #385C05;
+  cursor: pointer;
+  padding: 7px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 0.5rem;
+}
+
+
+
+
 .logout-btn:hover {
   background: #d4d6cb;
 }

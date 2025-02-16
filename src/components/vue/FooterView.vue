@@ -22,15 +22,15 @@
   </script>
   
   <style scoped>
-  .footer {
+ .footer {
     background-color: #385C05;
     color: #EDEFE4;
     padding: 20px;
     text-align: center;
     border-top-left-radius: 25px; 
     border-top-right-radius: 25px; 
-    border-top: 6px solid #385C05;
-  }
+    border-top: 6px solid #385C05;}
+  
   .footer-content {
     display: flex;
     justify-content: space-between;
