@@ -7,27 +7,27 @@
         <div class="form-grid">
           <div>
             <label for="depart">Lieu de départ</label>
-            <input id="depart" type="text" v-model="newRide.depart" placeholder="Lieu de départ" required />
+            <input id="depart" type="text" v-model="lieuDepart" placeholder="Lieu de départ" required />
           </div>
           <div>
             <label for="destination">Destination</label>
-            <input id="destination" type="text" v-model="newRide.destination" placeholder="Destination" required />
+            <input id="destination" type="text" v-model="lieuArrivee" placeholder="Destination" required />
           </div>
           <div>
             <label for="date">Date</label>
-            <input id="date" type="date" v-model="newRide.date" required />
+            <input id="date" type="date" v-model="date" required />
           </div>
           <div>
             <label for="heure">Heure</label>
-            <input id="heure" type="time" v-model="newRide.heure" required />
+            <input id="heure" type="time" v-model="heureDepart" required />
           </div>
           <div>
             <label for="places">Nombre de places</label>
-            <input id="places" type="number" v-model="newRide.places" placeholder="Nombre de places" required />
+            <input id="places" type="number" v-model="nbPlace" placeholder="Nombre de places" required />
           </div>
           <div>
             <label for="prix">Prix par personne (€)</label>
-            <input id="prix" type="number" v-model="newRide.prix" placeholder="Prix par personne (€)" required />
+            <input id="prix" type="number" v-model="prixPersonne" placeholder="Prix par personne (€)" required />
           </div>
         </div>
 
@@ -41,7 +41,10 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import dayjs from "dayjs";
+import { openBankingService } from "@/services/backend-api.js";
+import { useAuthStore } from "@/stores/authStore";
 
 export default {
   props: {
@@ -55,29 +58,58 @@ export default {
     }
   },
   setup(props, { emit }) {
-    const newRide = ref({
-      depart: "",
-      destination: "",
-      date: "",
-      heure: "",
-      places: "",
-      prix: "",
-    });
+
+      const authStore = useAuthStore();
+      const token = computed(() => authStore.token);
+      const lieuDepart= ref("");
+      const utilisateurId= ref("");
+      const lieuArrivee= ref("");
+      const date= ref("");
+      const heureDepart= ref("");
+      const nbPlace= ref("");
+      const prixPersonne= ref("");
+      //const voitureId=ref(1);
 
     const closeModal = () => {
       emit("close");
     };
 
-    const createRide = () => {
-      console.log("Création d'un covoiturage", newRide.value);
-      emit("create", newRide.value);  // Envoi des données du nouveau covoiturage au parent
+
+    const createRide = async () => {
+      try {
+        const credentials = {
+          lieuDepart: lieuDepart.value,
+          lieuArrivee: lieuArrivee.value,
+          utilisateurId:1,
+          date: dayjs(date.value, "YYYY-MM-DD").format("DD-MM-YYYY"),
+          heureDepart: "10:00:00",
+          nbPlace: nbPlace.value,
+          prixPersonne: prixPersonne.value,
+          voitureId: 1,
+          statut: "ACTIF",
+        };
+
+        const data = await openBankingService(credentials, "/covoiturage/createCovoiturage", 'POST', token);
+        
+        console.log("covoiturage créé :", data.value);
+        closeModal();
+      } catch (errorMessage) {
+        console.error("Erreur lors de la connexion :", errorMessage);
+      }
+
       closeModal();  // Ferme la modal après la création
     };
 
     return {
-      newRide,
       closeModal,
       createRide,
+      lieuArrivee,
+      lieuDepart,
+      date,
+      nbPlace,
+      prixPersonne,
+      heureDepart,
+      utilisateurId,
     };
   },
 };

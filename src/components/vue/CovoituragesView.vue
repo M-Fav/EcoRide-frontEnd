@@ -28,7 +28,6 @@
             <div class="covoiturage-grid">
               <p><span class="icon">📅</span> <strong>Date:</strong> {{ covoiturage.date }}</p>
               <p><span class="icon">⏰</span> <strong>Heure:</strong> {{ covoiturage.heureDepart[0] }}:{{ covoiturage.heureDepart[1] }}</p>
-              <p><span class="icon">⏳</span> <strong>Durée:</strong> {{ covoiturage.duree[0] }}h {{ covoiturage.duree[1] }}m</p>
               <p><span class="icon">🪑</span> <strong>Places:</strong> {{ covoiturage.nbPlace }}</p>
               <p><span class="icon">💶</span> <strong>Prix:</strong> {{ covoiturage.prixPersonne }} €</p>
             </div>
@@ -62,6 +61,9 @@ import { ref } from "vue";
 import { useAuthStore } from "@/stores/authStore";
 import CreerCovoiturageModal from "@/components/modal/CreerCovoiturageModal.vue";
 import LoginModal from "@/components/modal/LoginModal.vue";
+import { openBankingService } from "@/services/backend-api.js";
+import dayjs from "dayjs";
+
 
 export default {
   components: { CreerCovoiturageModal, LoginModal },
@@ -70,6 +72,29 @@ export default {
     const isCreatingRide = ref(false); 
     const modalTitle = ref("");
     const authStore = useAuthStore();
+
+        // Champs de recherche
+    const depart = ref("");
+    const destination = ref("");
+    const date = ref("");
+    const covoiturages = ref([]);
+    // Fonction de recherche
+    const rechercheCovoiturages = async () => {
+      try {
+        const credentials = { 
+          lieuDepart: depart.value, 
+          lieuArrivee: destination.value, 
+          date: dayjs(date.value, "YYYY-MM-DD").format("DD-MM-YYYY")
+        };
+        
+        const data = await openBankingService(credentials, '/covoiturage/covoiturages', 'GET');
+        covoiturages.value = Array.isArray(data) ? data : [];
+        console.log("Les covoiturages :", data);
+      } catch (errorMessage) {
+        console.error("Erreur lors de la connexion :", errorMessage);
+        covoiturages.value = [];
+      }
+    };
 
     const openModal = () => {
       if (authStore.isAuthenticated) {
@@ -91,8 +116,13 @@ export default {
       showModal,
       isCreatingRide,
       modalTitle,
+      depart,
+      destination,
+      date,
+      covoiturages,
       openModal,
       handleCreateRide,
+      searchRides: rechercheCovoiturages,
     };
   },
 };

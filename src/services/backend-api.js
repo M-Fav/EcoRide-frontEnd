@@ -3,7 +3,7 @@ import axios from "axios";
 const API_BASE_URL = "http://localhost:8080";
 //const API_BASE_URL = "https://ecoride-service-4d84c02e7cd5.herokuapp.com";
 
-export async function openBankingService(credentials, endpoint, method) {
+export async function openBankingService(credentials, endpoint, method, token) {
   try {
     console.log(`📤 Requête ${method} envoyée à ${endpoint}`);
     console.log("📦 Données envoyées :", JSON.stringify(credentials, null, 2));
@@ -13,6 +13,14 @@ export async function openBankingService(credentials, endpoint, method) {
       method: method.toUpperCase(),
       url: `${API_BASE_URL}${endpoint}`,
     };
+
+    // Ajout de l'en-tête Authorization avec Bearer token si le token est fourni
+    if (token) {
+      config.headers = {
+       // Authorization: `Bearer ${token}`,
+       Authorization: 'Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJtZWhkaSIsImlhdCI6MTczOTcyNjg3NCwiZXhwIjoxNzM5ODEzMjc0fQ.ZUcWcP3MEQfrYAv3JNBSWMyizOyh57xNkQIJiB2X5Twuhza04TvFPPDUr068smpb',
+      };
+    }
 
     // Si la méthode est GET, passer les données via 'params'
     if (method.toUpperCase() === "GET" && credentials) {
