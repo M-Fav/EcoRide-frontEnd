@@ -2,6 +2,7 @@
   <div class="login-modal">
     <div class="modal-content">
       <h2>{{ title || "Connexion"}}</h2>
+      <hr class="modal-divider">
       <form @submit.prevent="login">
         <div class="form-group">
           <label for="pseudo">Pseudo</label>
@@ -81,13 +82,8 @@ export default {
 }
 
 .modal-content {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   width: 400px;
   text-align: center;
-  position: relative;
 }
 
 .form-group {

@@ -35,7 +35,6 @@ export default {
   align-items: center;
   padding: 2rem;
   min-height: 100vh;
-  background-color: #f5f5f5;
 }
 
 .text-section {

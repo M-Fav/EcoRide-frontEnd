@@ -2,6 +2,7 @@
   <div class="sign-in-modal">
     <div class="modal-content">
       <h2>Inscription</h2>
+      <hr class="modal-divider">
       <form @submit.prevent="signUp">
         <div class="form-grid">
           <div>
@@ -141,12 +142,7 @@ export default {
 }
 
 .modal-content {
-  background-color: #EDEFE4;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   width: 500px;
-  position: relative;
 }
 
 h2 {

@@ -2,6 +2,7 @@
   <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
     <div class="modal-content">
       <h2>{{ title }}</h2>
+      <hr class="modal-divider">
 
       <form @submit.prevent="createRide">
         <div class="form-grid">
@@ -33,26 +34,35 @@
 
         <!-- Sélection d'une voiture sous forme de cartes avec un loader -->
         <div class="voiture-selection">
-          <h3>Choisir une voiture</h3>
+          <h3 class="voiture-title">Choisir une voiture</h3>
+
 
           <div v-if="isLoading" class="loader-container">
             <div class="loader"></div>
           </div>
 
-          <div v-else class="voiture-cards">
-            <div 
-              v-for="voiture in voitures" 
-              :key="voiture.voitureId" 
-              class="voiture-card" 
-              :class="{ selected: selectedVoitureId === voiture.voitureId }"
-              @click="selectedVoitureId = voiture.voitureId"
-            >
-              <h4>{{ voiture.marque }} - {{ voiture.modele }}</h4>
-              <p><strong>Immatriculation:</strong> {{ voiture.immatriculation }}</p>
-              <p><strong>Énergie:</strong> {{ voiture.energie }}</p>
+          <div v-else>
+            <div v-if="voitures.length === 0" class="no-voiture">
+              <p>Aucune voiture enregistrée.</p>
+              <button @click="ouvrirCreationVoiture" class="create-car-button">Créer une voiture</button>
+            </div>
+
+            <div v-else class="voiture-cards">
+              <div 
+                v-for="voiture in voitures" 
+                :key="voiture.voitureId" 
+                class="voiture-card" 
+                :class="{ selected: selectedVoitureId === voiture.voitureId }"
+                @click="selectedVoitureId = voiture.voitureId"
+              >
+                <h4>{{ voiture.marque }} - {{ voiture.modele }}</h4>
+                <p><strong>Immatriculation:</strong> {{ voiture.immatriculation }}</p>
+                <p><strong>Énergie:</strong> {{ voiture.energie }}</p>
+              </div>
             </div>
           </div>
         </div>
+
 
         <div class="modal-actions">
           <button type="submit" class="create-button">Créer</button>
@@ -111,6 +121,9 @@ export default {
         isLoading.value = false; // Désactive le chargement après récupération
       }
     };
+
+
+
 
     onMounted(fetchVoitures);
 
@@ -304,6 +317,35 @@ button {
   height: 40px;
   animation: spin 1s linear infinite;
 }
+
+.no-voiture {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.create-car-button {
+  background-color: #1a3b0e;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.create-car-button:hover {
+  background-color: #377d1d;
+}
+
+/* Centrage du titre "Choisir une voiture" */
+.voiture-title {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
 
 @keyframes spin {
   0% { transform: rotate(0deg); }
