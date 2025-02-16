@@ -34,8 +34,11 @@ export default {
     const login = async () => {
       try {
         error.value = null;
-        const credentials = { pseudo: pseudo.value, password: password.value };
-        const data = await openBankingService(credentials, '/login');
+        const credentials = { 
+          pseudo: pseudo.value, 
+          password: password.value,
+        };
+        const data = await openBankingService(credentials, '/login', 'POST');
         
         console.log("Utilisateur connecté :", data.utilisateur);
         
@@ -103,7 +106,7 @@ input {
 button {
   width: 100%;
   padding: 10px;
-  background-color: #007bff;
+  background-color: #385C05;
   color: white;
   border: none;
   border-radius: 5px;
@@ -112,11 +115,11 @@ button {
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #22963d;
 }
 
 .close-button {
-  background-color: #ff0000;
+  background-color: #a70000;
   width: auto;
   padding: 8px 16px;
   color: white;

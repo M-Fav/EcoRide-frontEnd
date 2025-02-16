@@ -2,7 +2,7 @@
   <header class="header">
     <div class="header-content">
       <!-- Logo à gauche et plus petit -->
-      <img alt="Vue logo" src="../assets/logoEcoRide.png" class="headerLogo" />
+      <img alt="Vue logo" src="../../assets/images/logoEcoRide.png" class="headerLogo" />
 
       <!-- Navigation centrée en bas -->
       <nav>
@@ -18,7 +18,7 @@
       <div v-if="isAuthenticated" class="user-info">
         <img :src="userPhoto" alt="Profil" class="profile-pic" />
         <span class = "user-pseudo">{{ user.pseudo }}</span>
-       <img  @click="logout" src="@/assets/iconeLogout.png"  alt="Déconnexion" class="logout-icon"/>
+       <img  @click="logout" src="../../assets/images/logoEcoRide.png"  alt="Déconnexion" class="logout-icon"/>
       </div>
 
       <!-- Si l'utilisateur n'est PAS connecté, afficher les boutons de connexion -->
@@ -46,7 +46,7 @@ const isModalLoginVisible = ref(false);
 const isModalSignUpVisible = ref(false);
 const isAuthenticated = computed(() => authStore.isAuthenticated);
 const user = computed(() => authStore.user);
-const userPhoto = computed(() => user.value?.photo || new URL("@/assets/iconeUser.png", import.meta.url).href);
+const userPhoto = computed(() => user.value?.photo || new URL("@/assets/images/iconeUser.png", import.meta.url).href);
 
 const logout = () => {
   authStore.logout();
@@ -73,7 +73,7 @@ const openLoginModal = () => {
 
 <script>
 import SignUpModal from "@/components/modal/SignUpModal.vue"; 
-import LoginModal from "@/components//modal/LoginModal.vue";
+import LoginModal from "@/components/modal/LoginModal.vue";
 
 export default {
   components: { SignUpModal, LoginModal },

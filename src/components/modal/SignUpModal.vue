@@ -26,7 +26,7 @@
           </div>
           <div>
             <label for="dateNaissance">Date de naissance</label>
-            <input id="dateNaissance" type="date" v-model="dob" required />
+            <input id="dateNaissance" type="date" v-model="dateNaissance" required />
           </div>
           <div>
             <label for="adresse">Adresse</label>
@@ -50,7 +50,8 @@
 
 <script>
 import { ref } from 'vue';
-//import { authStore } from "@/stores/authStore";
+import dayjs from "dayjs";
+import { useAuthStore } from "@/stores/authStore";
 import { openBankingService } from "@/services/backend-api.js";
 
 export default {
@@ -62,8 +63,11 @@ export default {
     const nom = ref("");
     const prenom = ref("");
     const photo = ref(null);
-    const adresse = ref("");
     const dateNaissance = ref("");
+    const adresse = ref("");
+    const telephone = ref("");
+    const authStore = useAuthStore();
+
 
     // Fonction pour gérer l'inscription
     const signUp = async () => {
@@ -75,14 +79,17 @@ export default {
           nom: nom.value,
           prenom: prenom.value,
           photo: photo.value,
-          adresse: adresse.value
+          dateNaissance: dayjs(dateNaissance.value, "YYYY-MM-DD").format("YYYY-MM-DD"),
+          adresse: adresse.value,
+          telephone: telephone.value,
+          role: "UTILISATEUR",
         };
 
-const data = await openBankingService(credentials, "/register");
+        const data = await openBankingService(credentials, "/register", 'POST');
         
         console.log("Utilisateur créé :", data.utilisateur);
         
-       // authStore.login(data.utilisateur, data.access_token);
+        authStore.login(data.utilisateur, data.access_token);
         closeModal();
       } catch (errorMessage) {
         console.error("Erreur lors de la connexion :", errorMessage);
@@ -112,6 +119,8 @@ const data = await openBankingService(credentials, "/register");
       signUp,
       handleFileUpload,
       closeModal,
+      dateNaissance,
+      telephone,
     };
   },
 };

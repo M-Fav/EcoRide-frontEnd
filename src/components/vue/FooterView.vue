@@ -5,7 +5,7 @@
           <p>Adresse table donnee_entreprise</p>
         </div>
         <div class="footer-center">
-          <img alt="Vue logo" src="../assets/logoEcoRide.png" class="footerLogo" />
+          <img alt="Vue logo" src="/src/assets/images/logoEcoRide.png" class="footerLogo" />
         </div>
         <div class="footer-right">
           <p>Email: mail table donnee_entreprise</p>

@@ -16,8 +16,8 @@
     </div>
     
     <div class="image-section">
-      <img  src="../assets/logoEcoRide.png" class="image" />
-      <img  src="../assets/logoEcoRide.png" class="image" />
+      <img  src="../../assets/images/logoEcoRide.png" class="image" />
+      <img  src="../../assets/images/logoEcoRide.png" class="image" />
     </div>
   </div>
 </template>

@@ -1,19 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import LoginView from '@/components/modal/LoginModal.vue'
-import TokenView from '@/components/TokenView.vue' 
-import AccueilView from '@/components/AccueilView.vue';
+import LoginModal from '@/components/modal/LoginModal.vue'
+import CovoituragesView from '@/components/vue/CovoituragesView.vue' 
+import AccueilView from '@/components/vue/AccueilView.vue';
 
 const routes = [
   {
     path: '/login',
     name: 'login',
-    component: LoginView
+    component: LoginModal
   },
   {
-    path: '/token',
-    name: 'token-display', 
-    component: TokenView,
-    props: route => ({ token: route.state?.token }) // récupératuon du token
+    path: '/covoiturages',
+    name: 'covoiturages', 
+    component: CovoituragesView,
+    //props: route => ({ token: route.state?.token }) // récupératuon du token
   },
   {
     path: '/accueil',
