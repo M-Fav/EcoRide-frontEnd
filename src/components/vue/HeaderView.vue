@@ -18,7 +18,7 @@
       <div v-if="isAuthenticated" class="user-info">
         <img :src="userPhoto" alt="Profil" class="profile-pic" />
         <span class = "user-pseudo">{{ user.pseudo }}</span>
-       <img  @click="logout" src="../../assets/images/logoEcoRide.png"  alt="Déconnexion" class="logout-icon"/>
+       <img  @click="logout" src="../../assets/images/iconeLogout.png"  alt="Déconnexion" class="logout-icon"/>
       </div>
 
       <!-- Si l'utilisateur n'est PAS connecté, afficher les boutons de connexion -->

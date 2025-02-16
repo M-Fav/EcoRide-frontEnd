@@ -1,7 +1,7 @@
 <template>
   <div class="login-modal">
     <div class="modal-content">
-      <h2>Connexion</h2>
+      <h2>{{ title || "Connexion"}}</h2>
       <form @submit.prevent="login">
         <div class="form-group">
           <label for="pseudo">Pseudo</label>
@@ -25,6 +25,11 @@ import { useAuthStore } from "@/stores/authStore";
 import { openBankingService } from "@/services/backend-api.js";
 
 export default {
+  props: {
+    title: {
+      type: String,
+    },
+  },
   setup(_, { emit }) {
     const pseudo = ref("");
     const password = ref("");
@@ -34,14 +39,14 @@ export default {
     const login = async () => {
       try {
         error.value = null;
-        const credentials = { 
-          pseudo: pseudo.value, 
+        const credentials = {
+          pseudo: pseudo.value,
           password: password.value,
         };
         const data = await openBankingService(credentials, '/login', 'POST');
-        
+
         console.log("Utilisateur connecté :", data.utilisateur);
-        
+
         authStore.login(data.utilisateur, data.access_token);
         closeModal();
       } catch (errorMessage) {
@@ -58,6 +63,8 @@ export default {
   },
 };
 </script>
+
+
 
 <style scoped>
 .login-modal {

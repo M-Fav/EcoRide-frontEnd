@@ -4,22 +4,11 @@
 
     <!-- Barre de recherche -->
     <div class="search-bar">
-      <input 
-        type="text" 
-        v-model="depart" 
-        placeholder="Lieu de départ" 
-      />
-      <input 
-        type="text" 
-        v-model="destination" 
-        placeholder="Destination" 
-      />
-      <input 
-        type="date" 
-        v-model="date" 
-      />
+      <input type="text" v-model="depart" placeholder="Lieu de départ" />
+      <input type="text" v-model="destination" placeholder="Destination" />
+      <input type="date" v-model="date" />
       <button @click="searchRides">Rechercher</button>
-      <button class="create-btn" @click="showModal = true">
+      <button class="create-btn" @click="openModal">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 5V19M5 12H19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -49,72 +38,67 @@
       <p v-else>Aucun covoiturage trouvé.</p>
     </div>
 
-    <!-- Modal de création -->
-    <CreerCovoiturageModal :showModal="showModal" @close="showModal = false" @create="handleCreateRide" />
+    <!-- Modal de Création de Covoiturage -->
+    <CreerCovoiturageModal
+      v-if="showModal && isCreatingRide"
+      :showModal="showModal"
+      :title="modalTitle"
+      @close="showModal = false" 
+      @create="handleCreateRide"
+    />
+
+    <!-- Modal de Connexion -->
+    <LoginModal
+      v-if="showModal && !isCreatingRide"
+      :showModal="showModal"
+      :title="modalTitle"
+      @close="showModal = false"
+    />
   </div>
 </template>
 
 <script>
 import { ref } from "vue";
-import dayjs from "dayjs";
-import { openBankingService } from "@/services/backend-api.js";
+import { useAuthStore } from "@/stores/authStore";
 import CreerCovoiturageModal from "@/components/modal/CreerCovoiturageModal.vue";
+import LoginModal from "@/components/modal/LoginModal.vue";
 
 export default {
-  components: {
-    CreerCovoiturageModal,
-  },
+  components: { CreerCovoiturageModal, LoginModal },
   setup() {
-    // Champs de recherche
-    const depart = ref("");
-    const destination = ref("");
-    const date = ref("");
-    const covoiturages = ref([]);
     const showModal = ref(false);
-    const isLoading = ref(false); // Loader
+    const isCreatingRide = ref(false); 
+    const modalTitle = ref("");
+    const authStore = useAuthStore();
 
-    // Fonction de recherche
-    const rechercheCovoiturages = async () => {
-      isLoading.value = true;
-      try {
-        const credentials = { 
-          lieuDepart: depart.value, 
-          lieuArrivee: destination.value, 
-          date: dayjs(date.value, "YYYY-MM-DD").format("YYYY-MM-DD")
-        };
-        
-        const data = await openBankingService(credentials, '/covoiturage/covoiturages', 'GET');
-
-        covoiturages.value = Array.isArray(data) ? data : [];
-        console.log("Les covoiturages :", data);
-      } catch (errorMessage) {
-        console.error("Erreur lors de la connexion :", errorMessage);
-        covoiturages.value = [];
-      } finally {
-        isLoading.value = false;
+    const openModal = () => {
+      if (authStore.isAuthenticated) {
+        isCreatingRide.value = true;
+        modalTitle.value = "Créer un covoiturage";
+      } else {
+        isCreatingRide.value = false;
+        modalTitle.value = "Veuillez vous connecter";
       }
+      showModal.value = true;  // Afficher la modal
     };
 
-    // Gestion de la création d'un covoiturage
     const handleCreateRide = (ride) => {
       console.log("Nouveau covoiturage créé :", ride);
       showModal.value = false;
-      // Ici, tu peux envoyer les données à l'API
     };
 
     return {
-      depart,
-      destination,
-      date,
-      covoiturages,
-      searchRides: rechercheCovoiturages,
       showModal,
+      isCreatingRide,
+      modalTitle,
+      openModal,
       handleCreateRide,
-      isLoading,
     };
   },
 };
 </script>
+
+
 
 <style scoped>
 .covoiturages-view {
