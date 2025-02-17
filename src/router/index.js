@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginModal from '@/components/modal/LoginModal.vue'
 import CovoituragesView from '@/components/vue/CovoituragesView.vue' 
 import AccueilView from '@/components/vue/AccueilView.vue';
+import UtilisateurView from '@/components/vue/UtilisateurView.vue';
 
 const routes = [
   {
@@ -19,7 +20,12 @@ const routes = [
     path: '/accueil',
     name: 'accueil',
     component: AccueilView
-  }
+  },
+  {
+    path: '/utilisateur',
+    name: 'utilisateur',
+    component: UtilisateurView
+  },
 ];
 
 const router = createRouter({

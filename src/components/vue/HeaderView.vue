@@ -9,6 +9,7 @@
         <ul>
           <li><router-link to="/accueil">Accueil</router-link></li>
           <li><router-link to="/covoiturages">Covoiturages</router-link></li>
+          <li><router-link to="/utilisateur">Mon Espace</router-link></li>
           <!--<li><router-link to="/login">Connexion/Inscription</router-link></li>-->
           <li><router-link to="/contact">Contact</router-link></li>
         </ul>
