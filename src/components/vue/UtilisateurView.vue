@@ -28,7 +28,13 @@
                   <p><strong>Statut :</strong> {{ trip.statut }}</p>
                 </div>
                 <!-- Bouton Supprimer visible si statut ACTIF -->
-                <button v-if="trip.statut === 'ACTIF'" @click="supprimerCovoiturage(trip.id)" class="btn delete-btn">Supprimer</button>
+                <div class="btn-group">
+                <button v-if="trip.statut === 'ACTIF' && trip.conducteurId === user.utilisateurId" @click="supprimerCovoiturage(trip.id)" class="btn delete-btn">Supprimer</button>
+                <button v-if="trip.statut === 'ACTIF' && trip.conducteurId === user.utilisateurId" @click="demarrerCovoiturage(trip.id)" class="btn start-btn">Démarrer</button>
+                <button v-if="trip.statut === 'TERMINE' && trip.conducteurId !== user.utilisateurId" @click="validerCovoiturage(trip.id)" class="btn valid-btn">Valider</button>
+                <button v-if="trip.statut === 'EN_COURS' && trip.conducteurId === user.utilisateurId" @click="terminerCovoiturage(trip.id)" class="btn finish-btn">Terminer</button>
+              </div>
+
               </div>
             </div>
             <p v-else>Aucun covoiturage en cours.</p>
@@ -141,6 +147,7 @@
             arrivee: covoiturage.lieuArrivee,
             date: covoiturage.date,
             statut: covoiturage.statut,
+            conducteurId: covoiturage.conducteurId,
           }));
   
           historiqueEnCours.value = data.listeCovoituragesEnCours.map(covoiturage => ({
@@ -149,6 +156,7 @@
             arrivee: covoiturage.lieuArrivee,
             date: covoiturage.date,
             statut: covoiturage.statut,
+            conducteurId: covoiturage.conducteurId,
           }));
   
         } catch (error) {
@@ -170,6 +178,53 @@
       const closeCreateCarModal = () => {
         showCreerVoitureModal.value = false;
       };
+
+       // Fonction pour démarrer un covoiturage
+    const demarrerCovoiturage = async (id) => {
+      try {
+        const response = await ecorideService(
+          { covoiturageId: id },
+          "/covoiturage/startCovoiturage",
+          "PUT",
+          token
+        );
+        console.log('Covoiturage démarré:', response);
+        fetchCovoiturages(); // Met à jour l'historique
+      } catch (error) {
+        console.error("Erreur lors du démarrage du covoiturage:", error);
+      }
+    };
+
+    // Fonction pour terminer un covoiturage
+    const terminerCovoiturage = async (id) => {
+      try {
+        const response = await ecorideService(
+          { covoiturageId: id },
+          "/covoiturage/terminateCovoiturage",
+          "PUT",
+          token
+        );
+        console.log('Covoiturage terminé:', response);
+        fetchCovoiturages(); // Met à jour l'historique
+      } catch (error) {
+        console.error("Erreur lors de la fin du covoiturage:", error);
+      }
+    };
+
+    const validerCovoiturage = async (id) => {
+      try {
+        const response = await ecorideService(
+          { covoiturageId: id, utilisateurId },
+          "/covoitureur/validateCovoiturage",
+          "PUT",
+          token
+        );
+        console.log('Covoiturage terminé:', response);
+        fetchCovoiturages(); // Met à jour l'historique
+      } catch (error) {
+        console.error("Erreur lors de la fin du covoiturage:", error);
+      }
+    };
   
       // Fonction pour supprimer un covoiturage
       const supprimerCovoiturage = async (id) => {
@@ -202,6 +257,9 @@
         ajouterCredits,
         historiquePasses,
         historiqueEnCours,
+        demarrerCovoiturage,
+        validerCovoiturage,
+        terminerCovoiturage,
         supprimerCovoiturage,
         covoiturageId
       };
@@ -367,5 +425,57 @@
   .btn:hover {
     opacity: 0.8;
   }
+
+  .start-btn {
+  background: #27ae60;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.start-btn:hover {
+  opacity: 0.8;
+}
+
+/* Nouveau bouton Terminer */
+.finish-btn {
+  background: #f39c12;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.finish-btn:hover {
+  opacity: 0.8;
+}
+
+.valid-btn {
+  background: #27ae60;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.valid-btn:hover {
+  opacity: 0.8;
+}
+
+
+
+/* Conteneur des boutons */
+.btn-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
   </style>
   
