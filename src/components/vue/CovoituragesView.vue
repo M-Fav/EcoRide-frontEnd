@@ -82,6 +82,7 @@ export default {
     const rechercheCovoiturages = async () => {
       try {
         const credentials = { 
+          utilisateurId: authStore.user ? authStore.user.utilisateurId : "",
           lieuDepart: depart.value, 
           lieuArrivee: destination.value, 
           date: dayjs(date.value, "YYYY-MM-DD").format("DD-MM-YYYY")

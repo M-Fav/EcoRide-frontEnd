@@ -1,48 +1,145 @@
 <template>
-    <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
-      <div class="modal-content">
-        <h2>Créer une voiture</h2>
-  
-        
-      </div>
+  <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
+    <div class="modal-content">
+      <h2>Créer une voiture</h2>
+      <hr class="modal-divider">
+      
+      <!-- Formulaire pour créer une voiture -->
+      <form @submit.prevent="createCar">
+        <div class="form-grid">
+          <div>
+            <label for="marque">Marque</label>
+            <input 
+              id="marque" 
+              type="text" 
+              v-model="marque" 
+              placeholder="Marque" 
+              required 
+            />
+          </div>
+          <div>
+            <label for="modele">Modèle</label>
+            <input 
+              id="modele" 
+              type="text" 
+              v-model="modele" 
+              placeholder="Modèle" 
+              required 
+            />
+          </div>
+          <div>
+            <label for="immatriculation">Immatriculation</label>
+            <input 
+              id="immatriculation" 
+              type="text" 
+              v-model="immatriculation" 
+              placeholder="Immatriculation" 
+              required 
+            />
+          </div>
+          <div>
+            <label for="energie">Énergie</label>
+            <input 
+              id="energie" 
+              type="text" 
+              v-model="energie" 
+              placeholder="Énergie" 
+              required 
+            />
+          </div>
+          <div>
+            <label for="couleur">Couleur</label>
+            <input 
+              id="couleur" 
+              type="text" 
+              v-model="couleur" 
+              placeholder="Couleur" 
+              required 
+            />
+          </div>
+          <div>
+            <label for="datePremiereImmatriculation">Date de première immatriculation</label>
+            <input 
+              id="datePremiereImmatriculation" 
+              type="date" 
+              v-model="datePremiereImmatriculation" 
+              placeholder="Date première immatriculation" 
+              required 
+            />
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="submit" class="create-button">Créer</button>
+          <button type="button" class="close-button" @click="closeModal">Annuler</button>
+        </div>
+      </form>
     </div>
-  </template>
-  
+  </div>
+</template>
+
 <script>
-  import { ref } from "vue";
+import { ref, computed } from "vue";
+import dayjs from "dayjs";
+import { useAuthStore } from "@/stores/authStore";
+import { openBankingService } from "@/services/backend-api.js";
+
+export default {
+  props: {
+    showModal: Boolean, // Contrôle l'affichage de la modale
+    existingCarData: Object, // Reçoit les données JSON lors de l'appel
+  },
+  setup(props, { emit }) {
+
+    const authStore = useAuthStore();
+    const token = computed(() => authStore.token);
+    const marque = ref("");
+    const modele = ref("");
+    const immatriculation = ref("");
+    const energie = ref("");
+    const couleur = ref("");
+    const datePremiereImmatriculation= ref("");
   
-  export default {
-    props: {
-      showModal: Boolean, // Contrôle l'affichage de la modal
-    },
-    setup(props, { emit }) {
-      const newRide = ref({
-        depart: "",
-        destination: "",
-        date: "",
-        heure: "",
-        places: "",
-        prix: "",
-      });
-  
-      const closeModal = () => {
-        emit("close");
-      };
-  
-      const createRide = () => {
-        console.log("Création d'un covoiturage", newRide.value);
-        emit("create", newRide.value);
+
+    const closeModal = () => {
+      emit("close");
+    };
+
+    const createCar = async () => {
+      try {
+        const credentials = {
+          marque: marque.value,
+          modele: modele.value,
+          utilisateurId: authStore.user.utilisateurId,
+          immatriculation: immatriculation.value,
+          energie: energie.value,
+          couleur: couleur.value,
+          datePremiereImmatriculation: dayjs(datePremiereImmatriculation.value, "YYYY-MM-DD").format("YYYY-MM-DD"),
+        };
+
+        const data = await openBankingService(credentials, "/voitures/creationVoiture", "POST", token.value);
+        console.log("Voiture créé :", data);
+        emit("carCreated");
         closeModal();
-      };
-  
-      return {
-        newRide,
-        closeModal,
-        createRide,
-      };
-    },
-  };
+      } catch (errorMessage) {
+        console.error("Erreur lors de la création de la voiture :", errorMessage);
+      }
+    };
+
+    return {
+      marque,
+      modele,
+      immatriculation,
+      energie,
+      couleur,
+      datePremiereImmatriculation,
+      closeModal,
+      createCar,
+    };
+  },
+};
 </script>
+
   
   <style scoped>
   .modal-overlay {
@@ -56,16 +153,7 @@
     align-items: center;
     justify-content: center;
   }
-  
-  .modal-content {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    width: 400px;
-    text-align: center;
-    position: relative;
-  }
+
   
   h2 {
     margin-bottom: 20px;

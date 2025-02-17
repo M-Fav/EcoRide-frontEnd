@@ -32,10 +32,9 @@
           </div>
         </div>
 
-        <!-- Sélection d'une voiture sous forme de cartes avec un loader -->
+        <!-- Sélection d'une voiture -->
         <div class="voiture-selection">
           <h3 class="voiture-title">Choisir une voiture</h3>
-
 
           <div v-if="isLoading" class="loader-container">
             <div class="loader"></div>
@@ -44,7 +43,7 @@
           <div v-else>
             <div v-if="voitures.length === 0" class="no-voiture">
               <p>Aucune voiture enregistrée.</p>
-              <button @click="ouvrirCreationVoiture" class="create-car-button">Créer une voiture</button>
+              <button @click="openCreateCarModal" class="create-car-button">Créer une voiture</button>
             </div>
 
             <div v-else class="voiture-cards">
@@ -63,7 +62,6 @@
           </div>
         </div>
 
-
         <div class="modal-actions">
           <button type="submit" class="create-button">Créer</button>
           <button type="button" class="close-button" @click="closeModal">Annuler</button>
@@ -71,6 +69,13 @@
       </form>
     </div>
   </div>
+
+  <!-- Modale pour créer une voiture -->
+  <CreerVoitureModal 
+    :showModal="showCreerVoitureModal" 
+    @close="closeCreateCarModal"
+    @carCreated="fetchVoitures" 
+  />
 </template>
 
 <script>
@@ -78,8 +83,12 @@ import { ref, computed, onMounted } from "vue";
 import dayjs from "dayjs";
 import { openBankingService } from "@/services/backend-api.js";
 import { useAuthStore } from "@/stores/authStore";
+import CreerVoitureModal from "./CreerVoitureModal.vue";
 
 export default {
+  components: {
+    CreerVoitureModal,
+  },
   props: {
     showModal: {
       type: Boolean,
@@ -108,9 +117,22 @@ export default {
     const voitures = ref([]);
     const isLoading = ref(false);
 
+    // Contrôler l'affichage de la modale de création de voiture
+    const showCreerVoitureModal = ref(false);
+
+    // Méthode pour ouvrir la modale de création de voiture
+    const openCreateCarModal = () => {
+      showCreerVoitureModal.value = true;
+    };
+
+    // Méthode pour fermer la modale de création de voiture
+    const closeCreateCarModal = () => {
+      showCreerVoitureModal.value = false;
+    };
+
     // Récupérer les voitures de l'utilisateur avec un loader
     const fetchVoitures = async () => {
-      isLoading.value = true; // Active le chargement
+      isLoading.value = true;
       try {
         const credentialsVoitures = { utilisateurId: utilisateurId.value };
         const data = await openBankingService(credentialsVoitures, "/voitures/recupererVoituresUtilisateur", "GET", token.value);
@@ -118,19 +140,18 @@ export default {
       } catch (error) {
         console.error("Erreur lors de la récupération des voitures :", error);
       } finally {
-        isLoading.value = false; // Désactive le chargement après récupération
+        isLoading.value = false;
       }
     };
 
+    onMounted(fetchVoitures);  // Appel initial pour récupérer les voitures à l'ouverture du composant
 
-
-
-    onMounted(fetchVoitures);
-
+    // Fonction pour fermer la modale principale
     const closeModal = () => {
       emit("close");
     };
 
+    // Fonction pour créer un covoiturage
     const createRide = async () => {
       try {
         const credentials = {
@@ -165,10 +186,15 @@ export default {
       selectedVoitureId,
       voitures,
       isLoading,
+      showCreerVoitureModal,
+      openCreateCarModal,
+      closeCreateCarModal,
+      fetchVoitures,  // Inclure la méthode pour la récupération des voitures
     };
   },
 };
 </script>
+
 
 <style scoped>
 .modal-overlay {
@@ -184,13 +210,7 @@ export default {
 }
 
 .modal-content {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   width: 500px;
-  text-align: center;
-  position: relative;
 }
 
 h2 {
