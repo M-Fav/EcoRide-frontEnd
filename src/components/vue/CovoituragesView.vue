@@ -19,7 +19,12 @@
     <div class="results">
       <h2 class="results-title">Résultats</h2>
       <div v-if="covoiturages && covoiturages.length > 0" class="covoiturage-cards">
-        <div v-for="covoiturage in covoiturages" :key="covoiturage.covoiturageId" class="covoiturage-card">
+        <div 
+          v-for="covoiturage in covoiturages" 
+          :key="covoiturage.covoiturageId" 
+          class="covoiturage-card"
+          :class="{ selected: selectedCovoiturage && selectedCovoiturage.covoiturageId === covoiturage.covoiturageId }"
+          @click="selectCovoiturage(covoiturage)">
           <div class="covoiturage-header">
             <span class="icon">🚗</span>
             <strong>{{ covoiturage.lieuDepart }} ➝ {{ covoiturage.lieuArrivee }}</strong>
@@ -30,6 +35,23 @@
               <p><span class="icon">⏰</span> <strong>Heure:</strong> {{ covoiturage.heureDepart[0] }}:{{ covoiturage.heureDepart[1] }}</p>
               <p><span class="icon">🪑</span> <strong>Places:</strong> {{ covoiturage.nbPlace }}</p>
               <p><span class="icon">💶</span> <strong>Prix:</strong> {{ covoiturage.prixPersonne }} €</p>
+            </div>
+            <!-- Bouton Participer intégré dans la carte -->
+            <div class="participer-container">
+              <button 
+                v-if="selectedCovoiturage && selectedCovoiturage.covoiturageId === covoiturage.covoiturageId" 
+                :class="{'participer-btn': true, 'participation-validee': covoiturage.participationValidee}"
+                :disabled="covoiturage.participationValidee"
+                @click.stop="participerCovoiturage(covoiturage)">
+                <span v-if="!covoiturage.participationValidee">
+                  Participer
+                </span>
+                <span v-if="covoiturage.participationValidee">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
+                    <path d="M12.293 4.293a1 1 0 0 0-1.414 0L7 8.586 4.707 6.293a1 1 0 0 0-1.414 1.414l3 3a1 1 0 0 0 1.414 0l6-6a1 1 0 0 0 0-1.414z"/>
+                  </svg> Participe
+                </span>
+              </button>
             </div>
           </div>
         </div>
@@ -57,13 +79,12 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useAuthStore } from "@/stores/authStore";
 import CreerCovoiturageModal from "@/components/modal/CreerCovoiturageModal.vue";
 import LoginModal from "@/components/modal/LoginModal.vue";
-import { openBankingService } from "@/services/backend-api.js";
+import { ecorideService } from "@/services/backend-api.js";
 import dayjs from "dayjs";
-
 
 export default {
   components: { CreerCovoiturageModal, LoginModal },
@@ -72,28 +93,57 @@ export default {
     const isCreatingRide = ref(false); 
     const modalTitle = ref("");
     const authStore = useAuthStore();
+    const token = computed(() => authStore.token);
+    const user = computed(() => authStore.user);
 
-        // Champs de recherche
+    // Champs de recherche
     const depart = ref("");
     const destination = ref("");
     const date = ref("");
     const covoiturages = ref([]);
+    const selectedCovoiturage = ref(null); 
+
     // Fonction de recherche
     const rechercheCovoiturages = async () => {
       try {
         const credentials = { 
-          utilisateurId: authStore.user ? authStore.user.utilisateurId : "",
+          utilisateurId: user.value ? user.value.utilisateurId : "",
           lieuDepart: depart.value, 
           lieuArrivee: destination.value, 
           date: dayjs(date.value, "YYYY-MM-DD").format("DD-MM-YYYY")
         };
         
-        const data = await openBankingService(credentials, '/covoiturage/covoiturages', 'GET');
+        const data = await ecorideService(credentials, '/covoiturage/covoiturages', 'GET');
         covoiturages.value = Array.isArray(data) ? data : [];
         console.log("Les covoiturages :", data);
       } catch (errorMessage) {
         console.error("Erreur lors de la connexion :", errorMessage);
         covoiturages.value = [];
+      }
+    };
+
+    // Sélectionner un covoiturage
+    const selectCovoiturage = (covoiturage) => {
+      selectedCovoiturage.value = covoiturage;
+    };
+
+    // Action lorsqu'on clique sur "Participer"
+    const participerCovoiturage = async (covoiturage) => {
+      try {
+        const credentials = {
+          validationCovoiturage: false,
+          utilisateurId: user.value.utilisateurId,
+          role: "PASSAGER",
+          covoiturageId: covoiturage.covoiturageId
+        };
+
+        const data = await ecorideService(credentials, "/covoitureur/createCovoitureur", "POST", token.value);
+        console.log("Participation réussie:", data);
+
+        // Mettre à jour l'état de la participation dans le covoiturage
+        covoiturage.participationValidee = true;
+      } catch (error) {
+        console.error("Erreur lors de la participation :", error);
       }
     };
 
@@ -105,7 +155,7 @@ export default {
         isCreatingRide.value = false;
         modalTitle.value = "Veuillez vous connecter";
       }
-      showModal.value = true;  // Afficher la modal
+      showModal.value = true;
     };
 
     const handleCreateRide = (ride) => {
@@ -121,16 +171,16 @@ export default {
       destination,
       date,
       covoiturages,
+      selectedCovoiturage,  // Ajouté pour lier à la vue
       openModal,
       handleCreateRide,
       searchRides: rechercheCovoiturages,
+      selectCovoiturage,
+      participerCovoiturage
     };
   },
 };
 </script>
-
-
-
 <style scoped>
 .covoiturages-view {
   text-align: center;
@@ -220,5 +270,61 @@ button:hover {
 
 .create-btn:hover {
   background-color: #22963d;
+}
+
+/* Style du bouton "Participer" */
+.participer-btn {
+  background-color: #2c6f2b;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.participer-btn:hover {
+  background-color: #1d4f1a;
+}
+
+/* Style pour la carte de covoiturage */
+.covoiturage-card {
+  background: #f4f4f4;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Conteneur des détails du covoiturage */
+.covoiturage-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* Conteneur du bouton "Participer" */
+.participer-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* Style pour la carte sélectionnée */
+.selected {
+  border: 2px solid #2c6f2b;
+}
+
+/* Style pour le bouton après validation de la participation */
+.participation-validee {
+  background-color: #28a745;
+  display: flex;
+  align-items: center;
+}
+
+.participation-validee svg {
+  margin-right: 8px;
 }
 </style>

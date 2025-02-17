@@ -81,7 +81,7 @@
 <script>
 import { ref, computed, onMounted } from "vue";
 import dayjs from "dayjs";
-import { openBankingService } from "@/services/backend-api.js";
+import { ecorideService } from "@/services/backend-api.js";
 import { useAuthStore } from "@/stores/authStore";
 import CreerVoitureModal from "./CreerVoitureModal.vue";
 
@@ -135,7 +135,7 @@ export default {
       isLoading.value = true;
       try {
         const credentialsVoitures = { utilisateurId: utilisateurId.value };
-        const data = await openBankingService(credentialsVoitures, "/voitures/recupererVoituresUtilisateur", "GET", token.value);
+        const data = await ecorideService(credentialsVoitures, "/voitures/recupererVoituresUtilisateur", "GET", token.value);
         voitures.value = data;
       } catch (error) {
         console.error("Erreur lors de la récupération des voitures :", error);
@@ -166,7 +166,7 @@ export default {
           statut: "ACTIF",
         };
 
-        const data = await openBankingService(credentials, "/covoiturage/createCovoiturage", "POST", token.value);
+        const data = await ecorideService(credentials, "/covoiturage/createCovoiturage", "POST", token.value);
         console.log("Covoiturage créé :", data);
         closeModal();
       } catch (errorMessage) {

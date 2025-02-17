@@ -82,7 +82,7 @@
 import { ref, computed } from "vue";
 import dayjs from "dayjs";
 import { useAuthStore } from "@/stores/authStore";
-import { openBankingService } from "@/services/backend-api.js";
+import { ecorideService } from "@/services/backend-api.js";
 
 export default {
   props: {
@@ -117,7 +117,7 @@ export default {
           datePremiereImmatriculation: dayjs(datePremiereImmatriculation.value, "YYYY-MM-DD").format("YYYY-MM-DD"),
         };
 
-        const data = await openBankingService(credentials, "/voitures/creationVoiture", "POST", token.value);
+        const data = await ecorideService(credentials, "/voitures/creationVoiture", "POST", token.value);
         console.log("Voiture créé :", data);
         emit("carCreated");
         closeModal();

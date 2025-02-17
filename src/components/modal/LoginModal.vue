@@ -23,7 +23,7 @@
 <script>
 import { ref } from "vue";
 import { useAuthStore } from "@/stores/authStore";
-import { openBankingService } from "@/services/backend-api.js";
+import { ecorideService } from "@/services/backend-api.js";
 
 export default {
   props: {
@@ -44,7 +44,7 @@ export default {
           pseudo: pseudo.value,
           password: password.value,
         };
-        const data = await openBankingService(credentials, '/login', 'POST');
+        const data = await ecorideService(credentials, '/login', 'POST');
 
         console.log("Utilisateur connecté :", data.utilisateur);
 

@@ -53,7 +53,7 @@
 import { ref } from 'vue';
 import dayjs from "dayjs";
 import { useAuthStore } from "@/stores/authStore";
-import { openBankingService } from "@/services/backend-api.js";
+import { ecorideService } from "@/services/backend-api.js";
 
 export default {
   setup(_, { emit }) {
@@ -86,7 +86,7 @@ export default {
           role: "UTILISATEUR",
         };
 
-        const data = await openBankingService(credentials, "/register", 'POST');
+        const data = await ecorideService(credentials, "/register", 'POST');
         
         console.log("Utilisateur créé :", data.utilisateur);
         

@@ -3,7 +3,7 @@ import axios from "axios";
 const API_BASE_URL = "http://localhost:8080";
 //const API_BASE_URL = "https://ecoride-service-4d84c02e7cd5.herokuapp.com";
 
-export async function openBankingService(credentials, endpoint, method, token) {
+export async function ecorideService(credentials, endpoint, method, token) {
   try {
     console.log(`📤 Requête ${method} envoyée à ${endpoint}`);
     console.log("📦 Données envoyées :", JSON.stringify(credentials, null, 2));
