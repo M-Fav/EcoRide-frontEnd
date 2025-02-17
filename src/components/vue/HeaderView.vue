@@ -9,7 +9,8 @@
         <ul>
           <li><router-link to="/accueil">Accueil</router-link></li>
           <li><router-link to="/covoiturages">Covoiturages</router-link></li>
-          <li><router-link to="/utilisateur">Mon Espace</router-link></li>
+          <li v-if="isAuthenticated"><router-link to="/utilisateur">Mon Espace</router-link></li>
+          <li v-if="isAuthenticated && role === 'ADMINISTRATEUR'"><router-link to="/employe">Gestion Employé</router-link></li>
           <li><router-link to="/contact">Contact</router-link></li>
         </ul>
       </nav>
@@ -48,12 +49,13 @@ const router = useRouter();
 const isModalLoginVisible = ref(false);
 const isModalSignUpVisible = ref(false);
 const isAuthenticated = computed(() => authStore.isAuthenticated);
+const role = computed(() => authStore.user.role);
 const user = computed(() => authStore.user);
 const userPhoto = computed(() => user.value?.photo || new URL("@/assets/images/iconeUser.png", import.meta.url).href);
 
 const logout = () => {
+  router.push("/accueil");
   authStore.logout();
-  router.push("/accueil"); // Redirige vers la page de connexion après déconnexion
 };
 
 const openSignUpModal = () => {

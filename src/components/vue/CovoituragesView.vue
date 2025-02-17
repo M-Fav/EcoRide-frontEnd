@@ -223,7 +223,6 @@ button:hover {
 }
 
 .covoiturages-view {
-  max-width: 1000px; /* Ajuste la largeur max */
   margin: 0 auto; /* Centre la vue */
   padding: 40px; /* Augmente l’espace intérieur */
 }

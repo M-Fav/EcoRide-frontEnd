@@ -29,10 +29,10 @@
                 </div>
                 <!-- Bouton Supprimer visible si statut ACTIF -->
                 <div class="btn-group">
-                <button v-if="trip.statut === 'ACTIF' && trip.conducteurId === user.utilisateurId" @click="supprimerCovoiturage(trip.id)" class="btn delete-btn">Supprimer</button>
-                <button v-if="trip.statut === 'ACTIF' && trip.conducteurId === user.utilisateurId" @click="demarrerCovoiturage(trip.id)" class="btn start-btn">Démarrer</button>
-                <button v-if="trip.statut === 'TERMINE' && trip.conducteurId !== user.utilisateurId && trip.validationCovoiturage === false" @click="validerCovoiturage(trip.id)" class="btn valid-btn">Valider</button>
-                <button v-if="trip.statut === 'EN_COURS' && trip.conducteurId === user.utilisateurId" @click="terminerCovoiturage(trip.id)" class="btn finish-btn">Terminer</button>
+                <button v-if="trip.statut === 'ACTIF' && user && trip.conducteurId === user.utilisateurId " @click="supprimerCovoiturage(trip.id)" class="btn delete-btn">Supprimer</button>
+                <button v-if="trip.statut === 'ACTIF' && user && trip.conducteurId === user.utilisateurId" @click="demarrerCovoiturage(trip.id)" class="btn start-btn">Démarrer</button>
+                <button v-if="trip.statut === 'TERMINE' && user && trip.conducteurId !== user.utilisateurId && trip.validationCovoiturage === false" @click="validerCovoiturage(trip.id)" class="btn valid-btn">Valider</button>
+                <button v-if="trip.statut === 'EN_COURS' && user && trip.conducteurId === user.utilisateurId" @click="terminerCovoiturage(trip.id)" class="btn finish-btn">Terminer</button>
               </div>
 
               </div>
@@ -49,8 +49,12 @@
           <img :src="userPhoto" alt="Photo de profil" class="user-photo" />
           <div class="user-details">
             <h2>{{ user?.nom }}</h2>
-            <p>Email : {{ user?.email }}</p>
-            <p>Crédits : <strong>{{ user?.credit }} €</strong></p>
+            <p class="user-email">Email : {{ user?.email }}</p>
+            <div class="credit-section">
+                <p>Crédits: </p>
+                <span class="user-credit">{{ user?.credit }}</span>
+                <img src="../../assets/images/leaf.png" class="credit-icon" />
+            </div>
             <button @click="ajouterCredits" class="btn btn-credit">Alimenter crédits</button>
           </div>
         </div>
@@ -88,7 +92,7 @@
   </template>
   
   <script>
-  import { ref, inject, onMounted } from "vue";
+  import { ref, inject, onMounted, computed } from "vue";
   import { ecorideService } from "@/services/backend-api.js";
   import { useAuthStore } from "@/stores/authStore";
   import CreerVoitureModal from "../modal/CreerVoitureModal.vue";
@@ -103,7 +107,8 @@
       const userPhoto = inject("userPhoto");
       const authStore = useAuthStore();
       const token = authStore.token;
-      const utilisateurId = authStore.user.utilisateurId;
+      const utilisateurId = computed(() => authStore.user?.utilisateurId ?? '');
+
   
       const voitures = ref([]);
       const isLoading = ref(false);
@@ -119,7 +124,7 @@
         isLoading.value = true;
         try {
           const data = await ecorideService(
-            { utilisateurId },
+            { utilisateurId: utilisateurId.value },
             "/voitures/recupererVoituresUtilisateur",
             "GET",
             token
@@ -135,7 +140,7 @@
       const fetchCovoiturages = async () => {
         try {
           const data = await ecorideService(
-            { utilisateurId },
+            { utilisateurId: utilisateurId.value },
             "/covoiturage/getCovoituragesUtilisateur",
             "GET",
             token
@@ -215,7 +220,7 @@
     const validerCovoiturage = async (id) => {
       try {
         const response = await ecorideService(
-          { covoiturageId: id, utilisateurId },
+          { covoiturageId: id, utilisateurId: utilisateurId.value },
           "/covoitureur/validateCovoiturage",
           "PUT",
           token
@@ -282,7 +287,6 @@
   .history-section {
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
   }
@@ -353,99 +357,109 @@
   
   /* Bloc Utilisateur */
   .user-info {
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-  
-  .user-photo {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-  }
-  
-  .user-details {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  /* Bloc Voitures */
-  .vehicles-section {
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.user-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid #385c05;
+}
+
+.credit-section {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
+}
+
+.user-credit {
+  font-size: 1rem;
+  font-weight: bold;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.user-email {
+  margin-block-end: 0;      
+}
+
+.credit-icon {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+}
 
 
-  .btn-credit {
-      background: #27ae60;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 10px;
-  }
-  
-  /* Liste des voitures en grid */
-  .car-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-  }
-  
-  .car-card {
-    background: white;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .car-icon {
-    font-size: 30px;
-  }
-  
-  .car-details h4 {
-    margin: 0;
-    font-size: 16px;
-  }
-  
-  .car-details p {
-    margin: 5px 0;
-    font-size: 14px;
-    color: #555;
-  }
-  
-  /* Boutons */
-  .btn-voiture {
-    background: #27ae60;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-  }
-  
-  .btn:hover {
-    opacity: 0.8;
-  }
-
-  .start-btn {
+.btn-credit {
   background: #27ae60;
   color: white;
   padding: 10px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-top: 10px;
+}
+  
+/* Liste des voitures en grid */
+.car-list {
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+gap: 15px;
+}
+
+.car-card {
+border: 2px solid #385c05;
+padding: 15px;
+border-radius: 10px;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+display: flex;
+align-items: center;
+gap: 10px;
+}
+
+.car-icon {
+font-size: 30px;
+}
+
+.car-details h4 {
+margin: 0;
+font-size: 16px;
+}
+
+.car-details p {
+margin: 5px 0;
+font-size: 14px;
+color: #555;
+}
+
+/* Boutons */
+.btn-voiture {
+background: #27ae60;
+color: white;
+padding: 10px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+margin-top: 10px;
+}
+
+.btn:hover {
+opacity: 0.8;
+}
+
+.start-btn {
+background: #27ae60;
+color: white;
+padding: 10px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+margin-top: 10px;
 }
 
 .start-btn:hover {
