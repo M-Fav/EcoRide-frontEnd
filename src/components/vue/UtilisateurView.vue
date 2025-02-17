@@ -3,30 +3,35 @@
       <!-- Bloc Gauche : Historique Covoiturage -->
       <div class="history-section">
         <div class="history-cards">
-          <!-- Covoiturages en cours -->
-          <div class="history-column">
-            <h3>Covoiturages en cours</h3>
-            <div v-if="user?.historiqueEnCours?.length">
-              <div v-for="trip in user?.historiqueEnCours" :key="trip.id" class="history-card">
-                <p><strong>Départ :</strong> {{ trip.depart }}</p>
-                <p><strong>Arrivée :</strong> {{ trip.arrivee }}</p>
-                <p><strong>Date :</strong> {{ trip.date }}</p>
-              </div>
-            </div>
-            <p v-else>Aucun covoiturage en cours.</p>
-          </div>
-  
           <!-- Covoiturages passés -->
           <div class="history-column">
             <h3>Covoiturages passés</h3>
-            <div v-if="user?.historiquePasses?.length">
-              <div v-for="trip in user?.historiquePasses" :key="trip.id" class="history-card">
+            <div v-if="historiquePasses.length">
+              <div v-for="trip in historiquePasses" :key="trip.id" class="history-card">
                 <p><strong>Départ :</strong> {{ trip.depart }}</p>
                 <p><strong>Arrivée :</strong> {{ trip.arrivee }}</p>
                 <p><strong>Date :</strong> {{ trip.date }}</p>
               </div>
             </div>
             <p v-else>Aucun covoiturage passé.</p>
+          </div>
+  
+          <!-- Covoiturages en cours -->
+          <div class="history-column">
+            <h3>Covoiturages en cours</h3>
+            <div v-if="historiqueEnCours.length">
+              <div v-for="trip in historiqueEnCours" :key="trip.id" class="history-card">
+                <div class="trip-info">
+                  <p><strong>Départ :</strong> {{ trip.depart }}</p>
+                  <p><strong>Arrivée :</strong> {{ trip.arrivee }}</p>
+                  <p><strong>Date :</strong> {{ trip.date }}</p>
+                  <p><strong>Statut :</strong> {{ trip.statut }}</p>
+                </div>
+                <!-- Bouton Supprimer visible si statut ACTIF -->
+                <button v-if="trip.statut === 'ACTIF'" @click="supprimerCovoiturage(trip.id)" class="btn delete-btn">Supprimer</button>
+              </div>
+            </div>
+            <p v-else>Aucun covoiturage en cours.</p>
           </div>
         </div>
       </div>
@@ -63,7 +68,7 @@
           </div>
   
           <p v-else>Aucune voiture enregistrée.</p>
-          <button @click="openCreateCarModal" class="btn">Créer une voiture</button>
+          <button @click="openCreateCarModal" class="btn-voiture">Créer une voiture</button>
         </div>
       </div>
     </div>
@@ -97,6 +102,11 @@
       const voitures = ref([]);
       const isLoading = ref(false);
       const showCreerVoitureModal = ref(false);
+      const historiquePasses = ref([]);
+      const historiqueEnCours = ref([]);
+      
+      // Déclaration de la constante covoiturageId
+      const covoiturageId = ref(null);  // Initialisation à null, peut être modifié plus tard
   
       // Récupération des voitures
       const fetchVoitures = async () => {
@@ -116,16 +126,68 @@
         }
       };
   
-      onMounted(fetchVoitures);
+      const fetchCovoiturages = async () => {
+        try {
+          const data = await ecorideService(
+            { utilisateurId },
+            "/covoiturage/getCovoituragesUtilisateur",
+            "GET",
+            token
+          );
+  
+          historiquePasses.value = data.listeCovoituragesPasses.map(covoiturage => ({
+            id: covoiturage.covoiturageId,
+            depart: covoiturage.lieuDepart,
+            arrivee: covoiturage.lieuArrivee,
+            date: covoiturage.date,
+            statut: covoiturage.statut,
+          }));
+  
+          historiqueEnCours.value = data.listeCovoituragesEnCours.map(covoiturage => ({
+            id: covoiturage.covoiturageId,
+            depart: covoiturage.lieuDepart,
+            arrivee: covoiturage.lieuArrivee,
+            date: covoiturage.date,
+            statut: covoiturage.statut,
+          }));
+  
+        } catch (error) {
+          console.error("Erreur lors de la récupération des covoiturages :", error);
+        }
+      };
+  
+      onMounted(() => {
+        fetchVoitures();
+        fetchCovoiturages();
+      });
   
       const ajouterCredits = () => alert("Ajout de crédits en cours...");
-      
+  
       const openCreateCarModal = () => {
         showCreerVoitureModal.value = true;
       };
   
       const closeCreateCarModal = () => {
         showCreerVoitureModal.value = false;
+      };
+  
+      // Fonction pour supprimer un covoiturage
+      const supprimerCovoiturage = async (id) => {
+        try {
+          // Requête API pour supprimer le covoiturage
+          const response = await ecorideService(
+            { covoiturageId: id }, 
+            "/covoiturage/deleteCovoiturage", 
+            "POST", 
+            token
+          );
+  
+          console.log(response)
+        } catch (error) {
+          console.error("Erreur lors de la suppression du covoiturage:", error);
+        }
+
+        fetchCovoiturages();
       };
   
       return {
@@ -138,6 +200,10 @@
         closeCreateCarModal,
         fetchVoitures,
         ajouterCredits,
+        historiquePasses,
+        historiqueEnCours,
+        supprimerCovoiturage,
+        covoiturageId
       };
     },
   };
@@ -187,13 +253,36 @@
     height: 100%;
     background-color: #385C05;
   }
-  
+
   .history-card {
     background: white;
     padding: 15px;
     margin: 5px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .trip-info {
+    flex-grow: 1;
+  }
+  
+  /* Bouton Supprimer - petit, rouge, et collé à droite */
+  .delete-btn {
+    background: red;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .delete-btn:hover {
+    opacity: 0.8;
   }
   
   /* Bloc Droite : Utilisateur & Voitures */
@@ -235,7 +324,7 @@
   .car-list {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center; /* Centre les éléments horizontalement */
+    justify-content: center;
     gap: 15px;
   }
   
@@ -265,7 +354,7 @@
   }
   
   /* Boutons */
-  .btn {
+  .btn-voiture {
     background: #27ae60;
     color: white;
     padding: 10px;
