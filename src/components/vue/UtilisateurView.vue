@@ -31,7 +31,7 @@
                 <div class="btn-group">
                 <button v-if="trip.statut === 'ACTIF' && trip.conducteurId === user.utilisateurId" @click="supprimerCovoiturage(trip.id)" class="btn delete-btn">Supprimer</button>
                 <button v-if="trip.statut === 'ACTIF' && trip.conducteurId === user.utilisateurId" @click="demarrerCovoiturage(trip.id)" class="btn start-btn">Démarrer</button>
-                <button v-if="trip.statut === 'TERMINE' && trip.conducteurId !== user.utilisateurId" @click="validerCovoiturage(trip.id)" class="btn valid-btn">Valider</button>
+                <button v-if="trip.statut === 'TERMINE' && trip.conducteurId !== user.utilisateurId && trip.validationCovoiturage === false" @click="validerCovoiturage(trip.id)" class="btn valid-btn">Valider</button>
                 <button v-if="trip.statut === 'EN_COURS' && trip.conducteurId === user.utilisateurId" @click="terminerCovoiturage(trip.id)" class="btn finish-btn">Terminer</button>
               </div>
 
@@ -48,10 +48,10 @@
         <div class="user-info">
           <img :src="userPhoto" alt="Photo de profil" class="user-photo" />
           <div class="user-details">
-            <h2>{{ user?.name }}</h2>
+            <h2>{{ user?.nom }}</h2>
             <p>Email : {{ user?.email }}</p>
-            <p>Crédits : <strong>{{ user?.credits }} €</strong></p>
-            <button @click="ajouterCredits" class="btn">Alimenter crédits</button>
+            <p>Crédits : <strong>{{ user?.credit }} €</strong></p>
+            <button @click="ajouterCredits" class="btn btn-credit">Alimenter crédits</button>
           </div>
         </div>
   
@@ -157,6 +157,7 @@
             date: covoiturage.date,
             statut: covoiturage.statut,
             conducteurId: covoiturage.conducteurId,
+            validationCovoiturage: covoiturage.validationCovoiturage,
           }));
   
         } catch (error) {
@@ -376,6 +377,17 @@
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+
+  .btn-credit {
+      background: #27ae60;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
   }
   
   /* Liste des voitures en grid */

@@ -10,7 +10,6 @@
           <li><router-link to="/accueil">Accueil</router-link></li>
           <li><router-link to="/covoiturages">Covoiturages</router-link></li>
           <li><router-link to="/utilisateur">Mon Espace</router-link></li>
-          <!--<li><router-link to="/login">Connexion/Inscription</router-link></li>-->
           <li><router-link to="/contact">Contact</router-link></li>
         </ul>
       </nav>
@@ -18,8 +17,12 @@
       <!-- Affichage du profil utilisateur si connecté -->
       <div v-if="isAuthenticated" class="user-info">
         <img :src="userPhoto" alt="Profil" class="profile-pic" />
-        <span class = "user-pseudo">{{ user.pseudo }}</span>
-       <img  @click="logout" src="../../assets/images/iconeLogout.png"  alt="Déconnexion" class="logout-icon"/>
+        <span class="user-pseudo">{{ user.pseudo }}</span>
+        <div class="credit-section">
+          <span class="user-credit">{{ user.credit }}</span>
+          <img src="../../assets/images/leaf.png" class="credit-icon" />
+        </div>
+        <img @click="logout" src="../../assets/images/iconeLogout.png" alt="Déconnexion" class="logout-icon" />
       </div>
 
       <!-- Si l'utilisateur n'est PAS connecté, afficher les boutons de connexion -->
@@ -27,7 +30,6 @@
         <button @click="openLoginModal" class="login-btn">Se connecter</button>
         <button @click="openSignUpModal" class="signup-btn">S'inscrire</button>
 
-            <!-- Affichage de la modale si isModalVisible est true -->
         <SignUpModal v-if="isModalSignUpVisible" @close="closeSignUpModal" />
         <LoginModal v-if="isModalLoginVisible" @close="closeLoginModal" />
       </div>
@@ -233,4 +235,23 @@ a:hover::before {
   padding-top: 0.5em;
 }
 
+.credit-section {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.user-credit {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #E9FFDA;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.credit-icon {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+}
 </style>

@@ -142,6 +142,9 @@ export default {
 
         // Mettre à jour l'état de la participation dans le covoiturage
         covoiturage.participationValidee = true;
+        
+        user.value.credit -= covoiturage.prixPersonne;
+        authStore.login(user, token);
       } catch (error) {
         console.error("Erreur lors de la participation :", error);
       }
