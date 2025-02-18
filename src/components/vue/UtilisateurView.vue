@@ -6,38 +6,47 @@
           <!-- Covoiturages passés -->
           <div class="history-column">
             <h3>Covoiturages passés</h3>
-            <div v-if="historiquePasses.length">
-              <div v-for="trip in historiquePasses" :key="trip.id" class="history-card">
-                <p><strong>Départ :</strong> {{ trip.depart }}</p>
-                <p><strong>Arrivée :</strong> {{ trip.arrivee }}</p>
-                <p><strong>Date :</strong> {{ trip.date }}</p>
-              </div>
+            <div v-if="isCovoituragesLoading" class="loader-container">
+              <div class="loader"></div>
             </div>
-            <p v-else>Aucun covoiturage passé.</p>
+            <div v-else>
+              <div v-if="historiquePasses.length">
+                <div v-for="trip in historiquePasses" :key="trip.id" class="history-card">
+                  <p><strong>Départ :</strong> {{ trip.depart }}</p>
+                  <p><strong>Arrivée :</strong> {{ trip.arrivee }}</p>
+                  <p><strong>Date :</strong> {{ trip.date }}</p>
+                </div>
+              </div>
+              <p v-else>Aucun covoiturage passé.</p>
+            </div>
           </div>
   
           <!-- Covoiturages en cours -->
           <div class="history-column">
             <h3>Covoiturages en cours</h3>
-            <div v-if="historiqueEnCours.length">
-              <div v-for="trip in historiqueEnCours" :key="trip.id" class="history-card">
-                <div class="trip-info">
-                  <p><strong>Départ :</strong> {{ trip.depart }}</p>
-                  <p><strong>Arrivée :</strong> {{ trip.arrivee }}</p>
-                  <p><strong>Date :</strong> {{ trip.date }}</p>
-                  <p><strong>Statut :</strong> {{ trip.statut }}</p>
-                </div>
-                <!-- Bouton Supprimer visible si statut ACTIF -->
-                <div class="btn-group">
-                <button v-if="trip.statut === 'ACTIF' && user && trip.conducteurId === user.utilisateurId " @click="supprimerCovoiturage(trip.id)" class="btn-rouge">Supprimer</button>
-                <button v-if="trip.statut === 'ACTIF' && user && trip.conducteurId === user.utilisateurId" @click="demarrerCovoiturage(trip.id)" class="btn-vert">Démarrer</button>
-                <button v-if="trip.statut === 'TERMINE' && user && trip.conducteurId !== user.utilisateurId && trip.validationCovoiturage === false" @click="validerCovoiturage(trip.id)" class="btn-vert valid-btn">Valider</button>
-                <button v-if="trip.statut === 'EN_COURS' && user && trip.conducteurId === user.utilisateurId" @click="terminerCovoiturage(trip.id)" class="btn-orange">Terminer</button>
-              </div>
-
-              </div>
+            <div v-if="isCovoituragesLoading" class="loader-container">
+              <div class="loader"></div>
             </div>
-            <p v-else>Aucun covoiturage en cours.</p>
+            <div v-else>
+              <div v-if="historiqueEnCours.length">
+                <div v-for="trip in historiqueEnCours" :key="trip.id" class="history-card">
+                  <div class="trip-info">
+                    <p><strong>Départ :</strong> {{ trip.depart }}</p>
+                    <p><strong>Arrivée :</strong> {{ trip.arrivee }}</p>
+                    <p><strong>Date :</strong> {{ trip.date }}</p>
+                    <p><strong>Statut :</strong> {{ trip.statut }}</p>
+                  </div>
+                  <!-- Bouton Supprimer visible si statut ACTIF -->
+                  <div class="btn-group">
+                  <button v-if="trip.statut === 'ACTIF' && user && trip.conducteurId === user.utilisateurId " @click="supprimerCovoiturage(trip.id)" class="btn-rouge">Supprimer</button>
+                  <button v-if="trip.statut === 'ACTIF' && user && trip.conducteurId === user.utilisateurId" @click="demarrerCovoiturage(trip.id)" class="btn-vert">Démarrer</button>
+                  <button v-if="trip.statut === 'TERMINE' && user && trip.conducteurId !== user.utilisateurId && trip.validationCovoiturage === false" @click="validerCovoiturage(trip.id, trip.covoitureurId)" class="btn-vert valid-btn">Valider</button>
+                  <button v-if="trip.statut === 'EN_COURS' && user && trip.conducteurId === user.utilisateurId" @click="terminerCovoiturage(trip.id)" class="btn-orange">Terminer</button>
+                </div>
+                </div>
+              </div>
+              <p v-else>Aucun covoiturage en cours.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -62,22 +71,22 @@
         <!-- Bloc Voitures -->
         <div class="vehicles-section">
           <h3>Vos voitures enregistrées</h3>
-          <div v-if="isLoading" class="loader-container">
+          <div v-if="isVoituresLoading" class="loader-container">
             <div class="loader"></div>
           </div>
-          
-          <div v-else-if="voitures.length" class="car-list">
-            <div v-for="voiture in voitures" :key="voiture.id" class="car-card">
-              <div class="car-icon">🚗</div>
-              <div class="car-details">
-                <h4>{{ voiture.marque }} - {{ voiture.modele }}</h4>
-                <p>Année : {{ new Date(voiture.datePremiereImmatriculation).getFullYear() }}</p>
-                <p>Couleur : {{ voiture.couleur }}</p>
+          <div v-else>
+            <div v-if="voitures.length" class="car-list">
+              <div v-for="voiture in voitures" :key="voiture.id" class="car-card">
+                <div class="car-icon">🚗</div>
+                <div class="car-details">
+                  <h4>{{ voiture.marque }} - {{ voiture.modele }}</h4>
+                  <p>Année : {{ new Date(voiture.datePremiereImmatriculation).getFullYear() }}</p>
+                  <p>Couleur : {{ voiture.couleur }}</p>
+                </div>
               </div>
             </div>
+            <p v-else>Aucune voiture enregistrée.</p>
           </div>
-  
-          <p v-else>Aucune voiture enregistrée.</p>
           <button @click="openCreateCarModal" class="btn-vert">Créer une voiture</button>
         </div>
       </div>
@@ -90,9 +99,9 @@
       @carCreated="fetchVoitures" 
     />
     
-    <AvisModal
-      :showModal="showAvisModal"
-      @close="closeAvisModal"
+    <CreerAvisModal :showModal="showAvisModal"
+     :covoitureurId="covoitureurId"
+      @close="closeAvisModal" 
     />
   </template>
   
@@ -101,12 +110,12 @@
   import { ecorideService } from "@/services/backend-api.js";
   import { useAuthStore } from "@/stores/authStore";
   import CreerVoitureModal from "../modal/CreerVoitureModal.vue";
-  import AvisModal from "../modal/AvisModal.vue";
+  import CreerAvisModal from "../modal/CreerAvisModal.vue";
   
   export default {
     name: "UtilisateurView",
     components: {
-      CreerVoitureModal, AvisModal
+      CreerVoitureModal, CreerAvisModal
     },
     setup() {
       const user = inject("user");
@@ -114,10 +123,12 @@
       const authStore = useAuthStore();
       const token = authStore.token;
       const utilisateurId = computed(() => authStore.user?.utilisateurId ?? '');
+      const covoitureurId = ref(0);
 
   
       const voitures = ref([]);
-      const isLoading = ref(false);
+      const isCovoituragesLoading = ref(false);
+      const isVoituresLoading = ref(false);
       const showCreerVoitureModal = ref(false);
       const showAvisModal= ref(false);
       const historiquePasses = ref([]);
@@ -128,7 +139,7 @@
   
       // Récupération des voitures
       const fetchVoitures = async () => {
-        isLoading.value = true;
+        isVoituresLoading.value = true;
         try {
           const data = await ecorideService(
             { utilisateurId: utilisateurId.value },
@@ -140,11 +151,12 @@
         } catch (error) {
           console.error("Erreur lors de la récupération des voitures :", error);
         } finally {
-          isLoading.value = false;
+          isVoituresLoading.value = false;
         }
       };
   
       const fetchCovoiturages = async () => {
+        isCovoituragesLoading.value = true;
         try {
           const data = await ecorideService(
             { utilisateurId: utilisateurId.value },
@@ -160,6 +172,7 @@
             date: covoiturage.date,
             statut: covoiturage.statut,
             conducteurId: covoiturage.conducteurId,
+            covoitureurId: covoiturage.covoitureurId,
           }));
   
           historiqueEnCours.value = data.listeCovoituragesEnCours.map(covoiturage => ({
@@ -170,10 +183,13 @@
             statut: covoiturage.statut,
             conducteurId: covoiturage.conducteurId,
             validationCovoiturage: covoiturage.validationCovoiturage,
+            covoitureurId: covoiturage.covoitureurId,
           }));
   
         } catch (error) {
           console.error("Erreur lors de la récupération des covoiturages :", error);
+        } finally {
+          isCovoituragesLoading.value = false;
         }
       };
   
@@ -191,11 +207,12 @@
       const closeCreateCarModal = () => {
         showCreerVoitureModal.value = false;
       };
-
-      const openAvisModal = () => {
+      
+      const openAvisModal = (id) => {
+        covoitureurId.value = id;
         showAvisModal.value = true;
       };
-  
+       
       const closeAvisModal = () => {
         showAvisModal.value = false;
       };
@@ -232,7 +249,7 @@
       }
     };
 
-    const validerCovoiturage = async (id) => {
+    const validerCovoiturage = async (id, covoitureurId) => {
       try {
         const response = await ecorideService(
           { covoiturageId: id, utilisateurId: utilisateurId.value },
@@ -241,7 +258,7 @@
           token
         );
         console.log('Covoiturage validé:', response);
-        openAvisModal();
+        openAvisModal(covoitureurId);
         fetchCovoiturages(); // Met à jour l'historique
       } catch (error) {
         console.error("Erreur lors de la fin du covoiturage:", error);
@@ -271,7 +288,8 @@
         user,
         userPhoto,
         voitures,
-        isLoading,
+        isCovoituragesLoading,
+        isVoituresLoading,
         showCreerVoitureModal,
         showAvisModal,
         openCreateCarModal,
@@ -287,6 +305,7 @@
         terminerCovoiturage,
         supprimerCovoiturage,
         covoiturageId,
+        covoitureurId,
       };
     },
   };
@@ -446,5 +465,26 @@ font-size: 14px;
 color: #555;
 }
 
+/* Style du loader */
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+}
+
+.loader {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #385C05;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
   </style>
   

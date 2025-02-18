@@ -304,6 +304,11 @@ input:focus {
   animation: spin 1s linear infinite;
 }
 
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .no-voiture {
   text-align: center;
   margin-top: 1rem;
@@ -336,9 +341,4 @@ input:focus {
   margin-bottom: 10px;
 }
 
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
 </style>

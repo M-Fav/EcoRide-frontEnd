@@ -9,17 +9,22 @@
         placeholder="Rechercher un utilisateur..."
       />
       <button @click="openSignUpModal" class="btn-vert">Créer un employé</button>
-      <div class="user-cards">
-        <div 
-          v-for="employe in filteredUsers" 
-          :key="employe?.utilisateurId" 
-          class="user-card"
-          :class="{ selected: selectedUtilisateurId === employe?.utilisateurId }"
-          @click="selectedUtilisateurId = employe.utilisateurId"
-        >
-          <span>{{ employe?.nom }} ({{ employe?.statut }})</span>
-          <button v-if="employe?.statut === 'ACTIF'" @click="changerStatutUtilisateur('SUSPENDU', employe?.utilisateurId)" class="btn-rouge">Suspendre</button>
-          <button v-if="employe?.statut === 'SUSPENDU'" @click="changerStatutUtilisateur('ACTIF', employe?.utilisateurId)" class="btn-vert">Activer</button>
+      <div v-if="isEmployesLoading" class="loader-container">
+        <div class="loader"></div>
+      </div>
+      <div v-else>
+        <div class="user-cards">
+          <div 
+            v-for="employe in filteredUsers" 
+            :key="employe?.utilisateurId" 
+            class="user-card"
+            :class="{ selected: selectedUtilisateurId === employe?.utilisateurId }"
+            @click="selectedUtilisateurId = employe.utilisateurId"
+          >
+            <span>{{ employe?.nom }} ({{ employe?.statut }})</span>
+            <button v-if="employe?.statut === 'ACTIF'" @click="changerStatutUtilisateur('SUSPENDU', employe?.utilisateurId)" class="btn-rouge">Suspendre</button>
+            <button v-if="employe?.statut === 'SUSPENDU'" @click="changerStatutUtilisateur('ACTIF', employe?.utilisateurId)" class="btn-vert">Activer</button>
+          </div>
         </div>
       </div>
     </div>
@@ -57,6 +62,7 @@ export default {
     const authStore = useAuthStore();
     const token = authStore.token;
     const selectedUtilisateurId = ref(null);
+    const isEmployesLoading = ref(false);
 
     const openSignUpModal = () => {
       isModalSignUpVisible.value = true;
@@ -67,6 +73,7 @@ export default {
     };
 
     const rechercheEmployes = async () => {
+      isEmployesLoading.value = true;
       try {
         const data = await ecorideService(
           "", 
@@ -77,6 +84,8 @@ export default {
         filteredUsers.value = data;
       } catch (error) {
         console.error("Erreur lors de la récupération des employés", error);
+      } finally {
+        isEmployesLoading.value = false;
       }
     };
 
@@ -121,7 +130,8 @@ export default {
       filteredUsers,
       searchQuery,
       selectedDate,
-      searchUsers: rechercheEmployes,
+      rechercheEmployes,
+      isEmployesLoading,
       selectedUtilisateurId,
       changerStatutUtilisateur,
       openSignUpModal,
@@ -168,5 +178,26 @@ export default {
 .user-card.selected {
   border-color: #385c05;
   background-color: #eaf5d3;
+}
+
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+}
+
+.loader {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #385C05;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 </style>
