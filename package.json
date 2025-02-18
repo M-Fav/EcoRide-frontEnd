@@ -15,6 +15,7 @@
     "dayjs": "^1.11.13",
     "frontend": "file:",
     "install": "^0.13.0",
+    "nexttick": "^0.1.0",
     "pinia": "^3.0.1",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"

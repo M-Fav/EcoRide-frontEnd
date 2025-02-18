@@ -94,7 +94,7 @@ export default {
     const modalTitle = ref("");
     const authStore = useAuthStore();
     const token = computed(() => authStore.token);
-    const user = computed(() => authStore.user);
+    const user = computed(() => authStore.user ?? '');
 
     // Champs de recherche
     const depart = ref("");
@@ -132,7 +132,7 @@ export default {
       try {
         const credentials = {
           validationCovoiturage: false,
-          utilisateurId: user.value.utilisateurId,
+          utilisateurId: user.value ? user.value.utilisateurId : "",
           role: "PASSAGER",
           covoiturageId: covoiturage.covoiturageId
         };
@@ -144,7 +144,7 @@ export default {
         covoiturage.participationValidee = true;
         
         user.value.credit -= covoiturage.prixPersonne;
-        authStore.login(user, token);
+        
       } catch (error) {
         console.error("Erreur lors de la participation :", error);
       }

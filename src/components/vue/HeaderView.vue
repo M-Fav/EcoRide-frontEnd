@@ -39,7 +39,7 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, nextTick } from "vue";
 import { ref } from "vue";
 import { useAuthStore } from "@/stores/authStore";
 import { useRouter } from "vue-router";
@@ -55,7 +55,10 @@ const userPhoto = computed(() => user.value?.photo || new URL("@/assets/images/i
 
 const logout = () => {
   router.push("/accueil");
-  authStore.logout();
+  nextTick(() => {
+    // 3. Déconnecter l'utilisateur
+    authStore.logout();
+  });
 };
 
 const openSignUpModal = () => {
