@@ -84,6 +84,7 @@ export default {
           adresse: adresse.value,
           telephone: telephone.value,
           role: "UTILISATEUR",
+          statut: 'ACTIF',
         };
 
         const data = await ecorideService(credentials, "/register", 'POST');

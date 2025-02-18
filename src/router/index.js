@@ -3,6 +3,7 @@ import LoginModal from '@/components/modal/LoginModal.vue'
 import CovoituragesView from '@/components/vue/CovoituragesView.vue' 
 import AccueilView from '@/components/vue/AccueilView.vue';
 import UtilisateurView from '@/components/vue/UtilisateurView.vue';
+import GestionEntrepriseView from '@/components/vue/GestionEntrepriseView.vue';
 
 const routes = [
   {
@@ -25,6 +26,11 @@ const routes = [
     path: '/utilisateur',
     name: 'utilisateur',
     component: UtilisateurView
+  },
+  {
+    path: '/gestionEntreprise',
+    name: 'gestionEntreprise',
+    component: GestionEntrepriseView
   },
 ];
 

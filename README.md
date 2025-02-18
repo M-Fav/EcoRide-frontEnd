@@ -7,6 +7,7 @@ npm install vue-router
 npm install axios
 npm install pinia
 npm install dayjs
+npm install chart.js
 ```
 
 ### Compiles and hot-reloads for development

@@ -10,7 +10,7 @@
           <li><router-link to="/accueil">Accueil</router-link></li>
           <li><router-link to="/covoiturages">Covoiturages</router-link></li>
           <li v-if="isAuthenticated"><router-link to="/utilisateur">Mon Espace</router-link></li>
-          <li v-if="isAuthenticated && role === 'ADMINISTRATEUR'"><router-link to="/employe">Gestion Employé</router-link></li>
+          <li v-if="isAuthenticated && role === 'ADMINISTRATEUR'"><router-link to="/gestionEntreprise">Gestion Entreprise</router-link></li>
           <li><router-link to="/contact">Contact</router-link></li>
         </ul>
       </nav>
@@ -235,6 +235,7 @@ a:hover::before {
   width: 24px;
   height: 24px;
   padding-top: 0.5em;
+  cursor: pointer;
 }
 
 .credit-section {
