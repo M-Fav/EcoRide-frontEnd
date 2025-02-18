@@ -1,7 +1,7 @@
 <template>
   <div class="sign-in-modal">
     <div class="modal-content">
-      <h2>Inscription</h2>
+      <h2>{{ title || 'Inscription' }}</h2>
       <hr class="modal-divider">
       <form @submit.prevent="signUp">
         <div class="form-grid">
@@ -56,7 +56,16 @@ import { useAuthStore } from "@/stores/authStore";
 import { ecorideService } from "@/services/backend-api.js";
 
 export default {
-  setup(_, { emit }) {
+  props: {
+    title: {
+      type: String,
+    },
+    role: {
+    type: String,
+    default: "UTILISATEUR", // Valeur par défaut si aucun rôle n'est passé
+  },
+  },
+  setup(props, { emit }) {
     // Déclarations des variables réactives
     const pseudo = ref("");
     const password = ref("");
@@ -83,7 +92,7 @@ export default {
           dateNaissance: dayjs(dateNaissance.value, "YYYY-MM-DD").format("YYYY-MM-DD"),
           adresse: adresse.value,
           telephone: telephone.value,
-          role: "UTILISATEUR",
+          role: props.role,
           statut: 'ACTIF',
         };
 
@@ -91,7 +100,10 @@ export default {
         
         console.log("Utilisateur créé :", data.utilisateur);
         
-        authStore.login(data.utilisateur, data.access_token);
+        if (props.role === 'UTILISATEUR') {
+          authStore.login(data.utilisateur, data.access_token);
+        }
+
         closeModal();
       } catch (errorMessage) {
         console.error("Erreur lors de la connexion :", errorMessage);

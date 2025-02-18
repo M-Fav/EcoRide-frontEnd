@@ -12,10 +12,10 @@
           <label for="password">Mot de passe</label>
           <input id="password" type="password" v-model="password" required />
         </div>
-        <button type="submit">Se connecter</button>
+        <button type="submit" class="btn-vert">Se connecter</button>
       </form>
       <p v-if="error" class="error">{{ error }}</p>
-      <button class="close-button" @click="closeModal">Fermer</button>
+      <button class="btn-rouge btn-close-position" @click="closeModal">Fermer</button>
     </div>
   </div>
 </template>
@@ -106,36 +106,10 @@ input {
   box-sizing: border-box;
 }
 
-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #385C05;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-button:hover {
-  background-color: #22963d;
-}
-
-.close-button {
-  background-color: #a70000;
-  width: auto;
-  padding: 8px 16px;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
+.btn-close-position {
   position: absolute;
   top: 10px;
   right: 10px;
-}
-
-.close-button:hover {
-  background-color: #cc0000;
 }
 
 .error {

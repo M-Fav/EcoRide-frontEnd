@@ -29,10 +29,10 @@
                 </div>
                 <!-- Bouton Supprimer visible si statut ACTIF -->
                 <div class="btn-group">
-                <button v-if="trip.statut === 'ACTIF' && user && trip.conducteurId === user.utilisateurId " @click="supprimerCovoiturage(trip.id)" class="btn delete-btn">Supprimer</button>
-                <button v-if="trip.statut === 'ACTIF' && user && trip.conducteurId === user.utilisateurId" @click="demarrerCovoiturage(trip.id)" class="btn start-btn">Démarrer</button>
-                <button v-if="trip.statut === 'TERMINE' && user && trip.conducteurId !== user.utilisateurId && trip.validationCovoiturage === false" @click="validerCovoiturage(trip.id)" class="btn valid-btn">Valider</button>
-                <button v-if="trip.statut === 'EN_COURS' && user && trip.conducteurId === user.utilisateurId" @click="terminerCovoiturage(trip.id)" class="btn finish-btn">Terminer</button>
+                <button v-if="trip.statut === 'ACTIF' && user && trip.conducteurId === user.utilisateurId " @click="supprimerCovoiturage(trip.id)" class="btn-rouge">Supprimer</button>
+                <button v-if="trip.statut === 'ACTIF' && user && trip.conducteurId === user.utilisateurId" @click="demarrerCovoiturage(trip.id)" class="btn-vert">Démarrer</button>
+                <button v-if="trip.statut === 'TERMINE' && user && trip.conducteurId !== user.utilisateurId && trip.validationCovoiturage === false" @click="validerCovoiturage(trip.id)" class="btn-vert valid-btn">Valider</button>
+                <button v-if="trip.statut === 'EN_COURS' && user && trip.conducteurId === user.utilisateurId" @click="terminerCovoiturage(trip.id)" class="btn-orange">Terminer</button>
               </div>
 
               </div>
@@ -55,7 +55,7 @@
                 <span class="user-credit">{{ user?.credit }}</span>
                 <img src="../../assets/images/leaf.png" class="credit-icon" />
             </div>
-            <button @click="ajouterCredits" class="btn btn-credit">Alimenter crédits</button>
+            <button @click="ajouterCredits" class="btn-vert">Alimenter crédits</button>
           </div>
         </div>
   
@@ -78,7 +78,7 @@
           </div>
   
           <p v-else>Aucune voiture enregistrée.</p>
-          <button @click="openCreateCarModal" class="btn-voiture">Créer une voiture</button>
+          <button @click="openCreateCarModal" class="btn-vert">Créer une voiture</button>
         </div>
       </div>
     </div>
@@ -319,7 +319,7 @@
 
   .history-card {
     background: white;
-    padding: 15px;
+    padding: 1em;
     margin: 5px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -341,7 +341,7 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-top: 10px;
+
   }
   
   .delete-btn:hover {
@@ -393,16 +393,6 @@
   height: 24px;
   vertical-align: middle;
 }
-
-
-.btn-credit {
-  background: #27ae60;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
   
 /* Liste des voitures en grid */
 .car-list {
@@ -437,71 +427,5 @@ font-size: 14px;
 color: #555;
 }
 
-/* Boutons */
-.btn-voiture {
-background: #27ae60;
-color: white;
-padding: 10px;
-border: none;
-border-radius: 5px;
-cursor: pointer;
-margin-top: 10px;
-}
-
-.btn:hover {
-opacity: 0.8;
-}
-
-.start-btn {
-background: #27ae60;
-color: white;
-padding: 10px;
-border: none;
-border-radius: 5px;
-cursor: pointer;
-margin-top: 10px;
-}
-
-.start-btn:hover {
-  opacity: 0.8;
-}
-
-/* Nouveau bouton Terminer */
-.finish-btn {
-  background: #f39c12;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.finish-btn:hover {
-  opacity: 0.8;
-}
-
-.valid-btn {
-  background: #27ae60;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.valid-btn:hover {
-  opacity: 0.8;
-}
-
-
-
-/* Conteneur des boutons */
-.btn-group {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
   </style>
   

@@ -43,7 +43,7 @@
           <div v-else>
             <div v-if="voitures.length === 0" class="no-voiture">
               <p>Aucune voiture enregistrée.</p>
-              <button @click="openCreateCarModal" class="create-car-button">Créer une voiture</button>
+              <button @click="openCreateCarModal" class="btn-vert">Créer une voiture</button>
             </div>
 
             <div v-else class="voiture-cards">
@@ -63,8 +63,8 @@
         </div>
 
         <div class="modal-actions">
-          <button type="submit" class="create-button">Créer</button>
-          <button type="button" class="close-button" @click="closeModal">Annuler</button>
+          <button type="submit" class="btn-vert btn-creer-width">Créer</button>
+          <button type="button" class="btn-rouge btn-close-position" @click="closeModal">Annuler</button>
         </div>
       </form>
     </div>
@@ -286,40 +286,6 @@ input:focus {
   margin-top: 1rem;
 }
 
-button {
-  padding: 10px;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.create-button {
-  background-color: #385c05;
-  color: white;
-  border-radius: 5px;
-  width: 100%;
-}
-
-.create-button:hover {
-  background-color: #22963d;
-}
-
-.close-button {
-  background-color: #a70000;
-  width: auto;
-  padding: 8px 16px;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-}
-
-.close-button:hover {
-  background-color: #cc0000;
-}
 
 /* Style du loader */
 .loader-container {
@@ -356,6 +322,10 @@ button {
 
 .create-car-button:hover {
   background-color: #377d1d;
+}
+
+.btn-creer-width {
+  width: 100%;
 }
 
 /* Centrage du titre "Choisir une voiture" */
