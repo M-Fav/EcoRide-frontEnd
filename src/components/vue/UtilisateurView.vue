@@ -89,6 +89,11 @@
       @close="closeCreateCarModal"
       @carCreated="fetchVoitures" 
     />
+    
+    <AvisModal
+      :showModal="showAvisModal"
+      @close="closeAvisModal"
+    />
   </template>
   
   <script>
@@ -96,11 +101,12 @@
   import { ecorideService } from "@/services/backend-api.js";
   import { useAuthStore } from "@/stores/authStore";
   import CreerVoitureModal from "../modal/CreerVoitureModal.vue";
+  import AvisModal from "../modal/AvisModal.vue";
   
   export default {
     name: "UtilisateurView",
     components: {
-      CreerVoitureModal,
+      CreerVoitureModal, AvisModal
     },
     setup() {
       const user = inject("user");
@@ -113,6 +119,7 @@
       const voitures = ref([]);
       const isLoading = ref(false);
       const showCreerVoitureModal = ref(false);
+      const showAvisModal= ref(false);
       const historiquePasses = ref([]);
       const historiqueEnCours = ref([]);
       
@@ -185,6 +192,14 @@
         showCreerVoitureModal.value = false;
       };
 
+      const openAvisModal = () => {
+        showAvisModal.value = true;
+      };
+  
+      const closeAvisModal = () => {
+        showAvisModal.value = false;
+      };
+
        // Fonction pour démarrer un covoiturage
     const demarrerCovoiturage = async (id) => {
       try {
@@ -225,7 +240,8 @@
           "PUT",
           token
         );
-        console.log('Covoiturage terminé:', response);
+        console.log('Covoiturage validé:', response);
+        openAvisModal();
         fetchCovoiturages(); // Met à jour l'historique
       } catch (error) {
         console.error("Erreur lors de la fin du covoiturage:", error);
@@ -257,8 +273,11 @@
         voitures,
         isLoading,
         showCreerVoitureModal,
+        showAvisModal,
         openCreateCarModal,
         closeCreateCarModal,
+        openAvisModal,
+        closeAvisModal,
         fetchVoitures,
         ajouterCredits,
         historiquePasses,
@@ -267,7 +286,7 @@
         validerCovoiturage,
         terminerCovoiturage,
         supprimerCovoiturage,
-        covoiturageId
+        covoiturageId,
       };
     },
   };
