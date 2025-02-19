@@ -8,7 +8,7 @@ export async function ecorideService(credentials, endpoint, method, token) {
     console.log(`📤 Requête ${method} envoyée à ${endpoint}`);
     console.log("📦 Données envoyées :", JSON.stringify(credentials, null, 2));
 
-       // Configuration de la requête
+    // Configuration de la requête
     const config = {
       method: method.toUpperCase(),
       url: `${API_BASE_URL}${endpoint}`,
@@ -19,8 +19,8 @@ export async function ecorideService(credentials, endpoint, method, token) {
     // Ajout de l'en-tête Authorization avec Bearer token si le token est fourni
     if (token) {
       config.headers = {
-       Authorization: `Bearer ${token}`,
-       //Authorization: 'Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJtZWhkaSIsImlhdCI6MTczOTcyNjg3NCwiZXhwIjoxNzM5ODEzMjc0fQ.ZUcWcP3MEQfrYAv3JNBSWMyizOyh57xNkQIJiB2X5Twuhza04TvFPPDUr068smpb',
+        Authorization: `Bearer ${token}`,
+        //Authorization: 'Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJtZWhkaSIsImlhdCI6MTczOTcyNjg3NCwiZXhwIjoxNzM5ODEzMjc0fQ.ZUcWcP3MEQfrYAv3JNBSWMyizOyh57xNkQIJiB2X5Twuhza04TvFPPDUr068smpb',
       };
     }
 
@@ -31,9 +31,9 @@ export async function ecorideService(credentials, endpoint, method, token) {
       // Pour POST, PUT, DELETE, ajouter les données dans le body
       config.data = credentials;
     }
-  
-      // Envoi de la requête
-      const response = await axios(config);
+
+    // Envoi de la requête
+    const response = await axios(config);
 
     console.log("✅ Réponse complète :", response);
     console.log("📩 Données de la réponse :", response.data);

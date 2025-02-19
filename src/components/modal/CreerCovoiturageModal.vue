@@ -47,13 +47,9 @@
             </div>
 
             <div v-else class="voiture-cards">
-              <div 
-                v-for="voiture in voitures" 
-                :key="voiture.voitureId" 
-                class="voiture-card" 
+              <div v-for="voiture in voitures" :key="voiture.voitureId" class="voiture-card"
                 :class="{ selected: selectedVoitureId === voiture.voitureId }"
-                @click="selectedVoitureId = voiture.voitureId"
-              >
+                @click="selectedVoitureId = voiture.voitureId">
                 <h4>{{ voiture.marque }} - {{ voiture.modele }}</h4>
                 <p><strong>Immatriculation:</strong> {{ voiture.immatriculation }}</p>
                 <p><strong>Énergie:</strong> {{ voiture.energie }}</p>
@@ -71,11 +67,7 @@
   </div>
 
   <!-- Modale pour créer une voiture -->
-  <CreerVoitureModal 
-    :showModal="showCreerVoitureModal" 
-    @close="closeCreateCarModal"
-    @carCreated="fetchVoitures" 
-  />
+  <CreerVoitureModal :showModal="showCreerVoitureModal" @close="closeCreateCarModal" @carCreated="fetchVoitures" />
 </template>
 
 <script>
@@ -305,8 +297,13 @@ input:focus {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .no-voiture {
@@ -340,5 +337,4 @@ input:focus {
   font-weight: bold;
   margin-bottom: 10px;
 }
-
 </style>

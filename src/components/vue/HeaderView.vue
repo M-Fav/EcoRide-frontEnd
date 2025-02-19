@@ -10,7 +10,8 @@
           <li><router-link to="/accueil">Accueil</router-link></li>
           <li><router-link to="/covoiturages">Covoiturages</router-link></li>
           <li v-if="isAuthenticated"><router-link to="/utilisateur">Mon Espace</router-link></li>
-          <li v-if="isAuthenticated && role === 'ADMINISTRATEUR'"><router-link to="/gestionEntreprise">Gestion Entreprise</router-link></li>
+          <li v-if="isAuthenticated && role === 'ADMINISTRATEUR'"><router-link to="/gestionEntreprise">Gestion
+              Entreprise</router-link></li>
           <li><router-link to="/contact">Contact</router-link></li>
         </ul>
       </nav>
@@ -62,30 +63,30 @@ const logout = () => {
 };
 
 const openSignUpModal = () => {
-      isModalSignUpVisible.value = true;
-    };
+  isModalSignUpVisible.value = true;
+};
 
 const closeSignUpModal = () => {
   isModalSignUpVisible.value = false;
-    };
+};
 
 const openLoginModal = () => {
   isModalLoginVisible.value = true;
-    };
+};
 
-    const closeLoginModal = () => {
-      isModalLoginVisible.value = false;
-    };
+const closeLoginModal = () => {
+  isModalLoginVisible.value = false;
+};
 
 </script>
 
 <script>
-import SignUpModal from "@/components/modal/SignUpModal.vue"; 
+import SignUpModal from "@/components/modal/SignUpModal.vue";
 import LoginModal from "@/components/modal/LoginModal.vue";
 
 export default {
   components: { SignUpModal, LoginModal },
-  
+
   name: "HeaderView",
 };
 </script>
@@ -113,17 +114,21 @@ export default {
 }
 
 .headerLogo {
-  height: 150px; /* Réduit la taille du logo */
+  height: 150px;
+  /* Réduit la taille du logo */
   width: auto;
-  margin-left: 1em; /* Espace à gauche */
+  margin-left: 1em;
+  /* Espace à gauche */
 }
 
 nav {
   width: 100%;
   display: flex;
-  justify-content: center; /* Centre la barre de navigation */
+  justify-content: center;
+  /* Centre la barre de navigation */
   position: absolute;
-  bottom: 10px; /* Place la barre de navigation en bas */
+  bottom: 10px;
+  /* Place la barre de navigation en bas */
 }
 
 nav ul {
@@ -145,13 +150,15 @@ a {
   color: #EDEFE4;
   text-decoration: none;
   padding: 0.5rem;
-  position: relative; /* Ajouté pour fixer le problème */
+  position: relative;
+  /* Ajouté pour fixer le problème */
 }
 
 a::before {
   content: "";
   position: absolute;
-  left: -5px; /* Positionne la ligne à gauche du lien */
+  left: -5px;
+  /* Positionne la ligne à gauche du lien */
   top: 0;
   bottom: 0;
   width: 5px;

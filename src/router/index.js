@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginModal from '@/components/modal/LoginModal.vue'
-import CovoituragesView from '@/components/vue/CovoituragesView.vue' 
+import CovoituragesView from '@/components/vue/CovoituragesView.vue'
 import AccueilView from '@/components/vue/AccueilView.vue';
 import UtilisateurView from '@/components/vue/UtilisateurView.vue';
 import GestionEntrepriseView from '@/components/vue/GestionEntrepriseView.vue';
@@ -13,7 +13,7 @@ const routes = [
   },
   {
     path: '/covoiturages',
-    name: 'covoiturages', 
+    name: 'covoiturages',
     component: CovoituragesView,
     //props: route => ({ token: route.state?.token }) // récupératuon du token
   },

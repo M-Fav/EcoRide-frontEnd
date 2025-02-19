@@ -40,6 +40,7 @@ export default {
 
 <style>
 @import "@/assets/styles/style.css";
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -49,6 +50,7 @@ export default {
   background-color: #EDEFE4;
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* S'assure que #app occupe toute la hauteur de la fenêtre */
+  min-height: 100vh;
+  /* S'assure que #app occupe toute la hauteur de la fenêtre */
 }
 </style>

@@ -61,9 +61,9 @@ export default {
       type: String,
     },
     role: {
-    type: String,
-    default: "UTILISATEUR", // Valeur par défaut si aucun rôle n'est passé
-  },
+      type: String,
+      default: "UTILISATEUR", // Valeur par défaut si aucun rôle n'est passé
+    },
   },
   setup(props, { emit }) {
     // Déclarations des variables réactives
@@ -97,9 +97,9 @@ export default {
         };
 
         const data = await ecorideService(credentials, "/register", 'POST');
-        
+
         console.log("Utilisateur créé :", data.utilisateur);
-        
+
         if (props.role === 'UTILISATEUR') {
           authStore.login(data.utilisateur, data.access_token);
         }

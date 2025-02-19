@@ -3,69 +3,34 @@
     <div class="modal-content">
       <h2>Créer une voiture</h2>
       <hr class="modal-divider">
-      
+
       <!-- Formulaire pour créer une voiture -->
       <form @submit.prevent="createCar">
         <div class="form-grid">
           <div>
             <label for="marque">Marque</label>
-            <input 
-              id="marque" 
-              type="text" 
-              v-model="marque" 
-              placeholder="Marque" 
-              required 
-            />
+            <input id="marque" type="text" v-model="marque" placeholder="Marque" required />
           </div>
           <div>
             <label for="modele">Modèle</label>
-            <input 
-              id="modele" 
-              type="text" 
-              v-model="modele" 
-              placeholder="Modèle" 
-              required 
-            />
+            <input id="modele" type="text" v-model="modele" placeholder="Modèle" required />
           </div>
           <div>
             <label for="immatriculation">Immatriculation</label>
-            <input 
-              id="immatriculation" 
-              type="text" 
-              v-model="immatriculation" 
-              placeholder="Immatriculation" 
-              required 
-            />
+            <input id="immatriculation" type="text" v-model="immatriculation" placeholder="Immatriculation" required />
           </div>
           <div>
             <label for="energie">Énergie</label>
-            <input 
-              id="energie" 
-              type="text" 
-              v-model="energie" 
-              placeholder="Énergie" 
-              required 
-            />
+            <input id="energie" type="text" v-model="energie" placeholder="Énergie" required />
           </div>
           <div>
             <label for="couleur">Couleur</label>
-            <input 
-              id="couleur" 
-              type="text" 
-              v-model="couleur" 
-              placeholder="Couleur" 
-              required 
-            />
+            <input id="couleur" type="text" v-model="couleur" placeholder="Couleur" required />
           </div>
           <div>
             <label for="datePremiereImmatriculation">Date de première immatriculation</label>
-            <input 
-              id="datePremiereImmatriculation" 
-              type="date" 
-              v-model="datePremiereImmatriculation" 
-              placeholder="Date première immatriculation" 
-              required 
-            />
+            <input id="datePremiereImmatriculation" type="date" v-model="datePremiereImmatriculation"
+              placeholder="Date première immatriculation" required />
           </div>
         </div>
 
@@ -98,8 +63,8 @@ export default {
     const immatriculation = ref("");
     const energie = ref("");
     const couleur = ref("");
-    const datePremiereImmatriculation= ref("");
-  
+    const datePremiereImmatriculation = ref("");
+
 
     const closeModal = () => {
       emit("close");
@@ -140,84 +105,84 @@ export default {
 };
 </script>
 
-  
-  <style scoped>
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
 
-  
-  h2 {
-    margin-bottom: 20px;
-  }
-  
-  .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-  
-  .form-grid div {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  label {
-    margin-bottom: 5px;
-    font-weight: bold;
-    font-size: 14px;
-    color: #333;
-  }
-  
-  input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: 1rem;
-  }
-  
-  input:focus {
-    border-color: #007bff;
-    outline: none;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-  }
-  
-  .modal-actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 1rem;
-  }
-  
-  button {
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .create-button {
-    background-color: #385c05;
-    color: white;
-    border-radius: 5px;
-    width: 100%;
-  }
-  
-  .create-button:hover {
-    background-color: #22963d;
-  }
-  
-  .close-button {
+<style scoped>
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+h2 {
+  margin-bottom: 20px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-grid div {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 5px;
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+}
+
+input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 1rem;
+}
+
+input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+button {
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.create-button {
+  background-color: #385c05;
+  color: white;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.create-button:hover {
+  background-color: #22963d;
+}
+
+.close-button {
   background-color: #a70000;
   width: auto;
   padding: 8px 16px;
@@ -233,5 +198,4 @@ export default {
 .close-button:hover {
   background-color: #cc0000;
 }
-  </style>
-  
+</style>

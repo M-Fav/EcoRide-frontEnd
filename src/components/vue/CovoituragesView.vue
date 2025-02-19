@@ -10,7 +10,7 @@
       <button @click="searchRides">Rechercher</button>
       <button class="create-btn" @click="openModal">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 5V19M5 12H19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12 5V19M5 12H19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </button>
     </div>
@@ -19,10 +19,7 @@
     <div class="results">
       <h2 class="results-title">Résultats</h2>
       <div v-if="covoiturages && covoiturages.length > 0" class="covoiturage-cards">
-        <div 
-          v-for="covoiturage in covoiturages" 
-          :key="covoiturage.covoiturageId" 
-          class="covoiturage-card"
+        <div v-for="covoiturage in covoiturages" :key="covoiturage.covoiturageId" class="covoiturage-card"
           :class="{ selected: selectedCovoiturage && selectedCovoiturage.covoiturageId === covoiturage.covoiturageId }"
           @click="selectCovoiturage(covoiturage)">
           <div class="covoiturage-header">
@@ -32,23 +29,24 @@
           <div class="covoiturage-details">
             <div class="covoiturage-grid">
               <p><span class="icon">📅</span> <strong>Date:</strong> {{ covoiturage.date }}</p>
-              <p><span class="icon">⏰</span> <strong>Heure:</strong> {{ covoiturage.heureDepart[0] }}:{{ covoiturage.heureDepart[1] }}</p>
+              <p><span class="icon">⏰</span> <strong>Heure:</strong> {{ covoiturage.heureDepart[0] }}:{{
+                covoiturage.heureDepart[1] }}</p>
               <p><span class="icon">🪑</span> <strong>Places:</strong> {{ covoiturage.nbPlace }}</p>
               <p><span class="icon">💶</span> <strong>Prix:</strong> {{ covoiturage.prixPersonne }} €</p>
             </div>
             <!-- Bouton Participer intégré dans la carte -->
             <div class="participer-container">
-              <button 
-                v-if="selectedCovoiturage && selectedCovoiturage.covoiturageId === covoiturage.covoiturageId" 
-                :class="{'participer-btn': true, 'participation-validee': covoiturage.participationValidee}"
-                :disabled="covoiturage.participationValidee"
-                @click.stop="participerCovoiturage(covoiturage)">
+              <button v-if="selectedCovoiturage && selectedCovoiturage.covoiturageId === covoiturage.covoiturageId"
+                :class="{ 'participer-btn': true, 'participation-validee': covoiturage.participationValidee }"
+                :disabled="covoiturage.participationValidee" @click.stop="participerCovoiturage(covoiturage)">
                 <span v-if="!covoiturage.participationValidee">
                   Participer
                 </span>
                 <span v-if="covoiturage.participationValidee">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
-                    <path d="M12.293 4.293a1 1 0 0 0-1.414 0L7 8.586 4.707 6.293a1 1 0 0 0-1.414 1.414l3 3a1 1 0 0 0 1.414 0l6-6a1 1 0 0 0 0-1.414z"/>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-check-circle" viewBox="0 0 16 16">
+                    <path
+                      d="M12.293 4.293a1 1 0 0 0-1.414 0L7 8.586 4.707 6.293a1 1 0 0 0-1.414 1.414l3 3a1 1 0 0 0 1.414 0l6-6a1 1 0 0 0 0-1.414z" />
                   </svg> Participe
                 </span>
               </button>
@@ -60,21 +58,12 @@
     </div>
 
     <!-- Modal de Création de Covoiturage -->
-    <CreerCovoiturageModal
-      v-if="showModal && isCreatingRide"
-      :showModal="showModal"
-      :title="modalTitle"
-      @close="showModal = false" 
-      @create="handleCreateRide"
-    />
+    <CreerCovoiturageModal v-if="showModal && isCreatingRide" :showModal="showModal" :title="modalTitle"
+      @close="showModal = false" @create="handleCreateRide" />
 
     <!-- Modal de Connexion -->
-    <LoginModal
-      v-if="showModal && !isCreatingRide"
-      :showModal="showModal"
-      :title="modalTitle"
-      @close="showModal = false"
-    />
+    <LoginModal v-if="showModal && !isCreatingRide" :showModal="showModal" :title="modalTitle"
+      @close="showModal = false" />
   </div>
 </template>
 
@@ -90,7 +79,7 @@ export default {
   components: { CreerCovoiturageModal, LoginModal },
   setup() {
     const showModal = ref(false);
-    const isCreatingRide = ref(false); 
+    const isCreatingRide = ref(false);
     const modalTitle = ref("");
     const authStore = useAuthStore();
     const token = computed(() => authStore.token);
@@ -101,18 +90,18 @@ export default {
     const destination = ref("");
     const date = ref("");
     const covoiturages = ref([]);
-    const selectedCovoiturage = ref(null); 
+    const selectedCovoiturage = ref(null);
 
     // Fonction de recherche
     const rechercheCovoiturages = async () => {
       try {
-        const credentials = { 
+        const credentials = {
           utilisateurId: user.value ? user.value.utilisateurId : "",
-          lieuDepart: depart.value, 
-          lieuArrivee: destination.value, 
+          lieuDepart: depart.value,
+          lieuArrivee: destination.value,
           date: dayjs(date.value, "YYYY-MM-DD").format("DD-MM-YYYY")
         };
-        
+
         const data = await ecorideService(credentials, '/covoiturage/covoiturages', 'GET');
         covoiturages.value = Array.isArray(data) ? data : [];
         console.log("Les covoiturages :", data);
@@ -142,9 +131,9 @@ export default {
 
         // Mettre à jour l'état de la participation dans le covoiturage
         covoiturage.participationValidee = true;
-        
+
         user.value.credit -= covoiturage.prixPersonne;
-        
+
       } catch (error) {
         console.error("Erreur lors de la participation :", error);
       }
@@ -197,7 +186,8 @@ export default {
   margin-bottom: 20px;
 }
 
-input, button {
+input,
+button {
   padding: 10px;
   font-size: 16px;
   border: 1px solid #ccc;
@@ -223,8 +213,10 @@ button:hover {
 }
 
 .covoiturages-view {
-  margin: 0 auto; /* Centre la vue */
-  padding: 40px; /* Augmente l’espace intérieur */
+  margin: 0 auto;
+  /* Centre la vue */
+  padding: 40px;
+  /* Augmente l’espace intérieur */
 }
 
 .results-title {

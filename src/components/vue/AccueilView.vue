@@ -5,21 +5,25 @@
       <h1>Bienvenue sur notre site</h1>
       <p class="intro">
         <span class="highlight">🌿 Qui sommes-nous ?</span><br>
-        Bienvenue sur <strong>[Nom de votre site]</strong>, la plateforme de covoiturage écoresponsable qui allie mobilité et respect de l’environnement. 🚗💚
+        Bienvenue sur <strong>[Nom de votre site]</strong>, la plateforme de covoiturage écoresponsable qui allie
+        mobilité et respect de l’environnement. 🚗💚
       </p>
       <p>
-        Nous croyons en une nouvelle manière de voyager : plus économique, plus conviviale et surtout plus durable. 
-        Notre mission est de réduire l’empreinte carbone des trajets du quotidien en connectant des conducteurs et 
+        Nous croyons en une nouvelle manière de voyager : plus économique, plus conviviale et surtout plus durable.
+        Notre mission est de réduire l’empreinte carbone des trajets du quotidien en connectant des conducteurs et
         des passagers partageant les mêmes valeurs.
       </p>
       <p class="highlight">Pourquoi nous choisir ?</p>
       <ul class="advantages">
-        <li>✅ <strong>Moins de pollution :</strong> Réduisons ensemble les émissions de CO₂ en optimisant chaque déplacement.</li>
-        <li>✅ <strong>Plus d’économies :</strong> Partagez les frais de route et rendez chaque trajet plus abordable.</li>
-        <li>✅ <strong>Une communauté engagée :</strong> Rejoignez un réseau de voyageurs responsables et bienveillants.</li>
+        <li>✅ <strong>Moins de pollution :</strong> Réduisons ensemble les émissions de CO₂ en optimisant chaque
+          déplacement.</li>
+        <li>✅ <strong>Plus d’économies :</strong> Partagez les frais de route et rendez chaque trajet plus abordable.
+        </li>
+        <li>✅ <strong>Une communauté engagée :</strong> Rejoignez un réseau de voyageurs responsables et bienveillants.
+        </li>
       </ul>
       <p class="conclusion">
-        Ensemble, faisons de chaque kilomètre un pas vers un avenir plus vert. 🌎💙 
+        Ensemble, faisons de chaque kilomètre un pas vers un avenir plus vert. 🌎💙
       </p>
     </div>
 
@@ -121,5 +125,4 @@ export default {
     width: 100%;
   }
 }
-
 </style>

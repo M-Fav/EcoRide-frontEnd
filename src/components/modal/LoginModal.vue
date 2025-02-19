@@ -1,7 +1,7 @@
 <template>
   <div class="login-modal">
     <div class="modal-content">
-      <h2>{{ title || "Connexion"}}</h2>
+      <h2>{{ title || "Connexion" }}</h2>
       <hr class="modal-divider">
       <form @submit.prevent="login">
         <div class="form-group">
