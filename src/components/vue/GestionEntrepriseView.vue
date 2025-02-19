@@ -1,6 +1,7 @@
 <template>
   <div class="gestion-entreprise-container">
     <div class="users-section">
+      <!-- Section des utilisateurs -->
       <h2>Utilisateurs</h2>
       <input 
         type="text" 
@@ -30,12 +31,24 @@
     </div>
 
     <div class="stats-section">
-      <h2>Statistiques</h2>
-      <label for="date-range">Période : </label>
-      <input type="date" id="date-range" v-model="selectedDate" />
-      <div class="charts">
-        <div class="chart" id="chart1"></div>
-        <div class="chart" id="chart2"></div>
+      <h2>Statistiques des Crédits</h2>
+
+      <label class="month-select" for="month-select">Sélectionner le mois et l'année :</label>
+      
+      <select v-model="selectedMonth" id="month-select">
+        <option v-for="(month, index) in months" :key="index" :value="index">{{ month }}</option>
+      </select>
+      <select v-model="selectedYear" id="year-select">
+        <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+      </select>
+      <button class="btn-vert" @click="afficherStatistiques()">Afficher</button>
+
+      <!--Graphique-->
+      <div v-if="creditStats.length > 0" class="charts">
+        <canvas id="creditChart" width="400" height="200"></canvas>
+      </div>
+      <div v-else>
+        <p>Aucune donnée à afficher pour cette période.</p>
       </div>
     </div>
   </div>
@@ -44,10 +57,11 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { ecorideService } from "@/services/backend-api.js";
 import { useAuthStore } from "@/stores/authStore";
 import SignUpModal from "@/components/modal/SignUpModal.vue"; 
+import Chart from 'chart.js/auto';
 
 export default {
   name: "GestionEntrepriseView",
@@ -58,7 +72,27 @@ export default {
     const filteredUsers = ref(users.value);
     const searchQuery = ref('');
     const isModalSignUpVisible = ref(false);
-    const selectedDate = ref('');
+    const selectedMonth = ref(new Date().getMonth());
+    const selectedYear = ref(new Date().getFullYear());
+    const creditStats = ref([]);
+
+    const months = [
+      "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", 
+      "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+    ];
+
+    const years = Array.from({ length: 11 }, (_, i) => selectedYear.value - 5 + i);
+
+    const filteredStats = computed(() => {
+      if (!selectedYear.value || selectedMonth.value === null) return [];
+      return creditStats.value.filter(stat => {
+        const statDate = new Date(stat.date);
+        const statMonth = statDate.getMonth();
+        const statYear = statDate.getFullYear();
+        return statMonth === selectedMonth.value && statYear === selectedYear.value;
+      });
+    });
+
     const authStore = useAuthStore();
     const token = authStore.token;
     const selectedUtilisateurId = ref(null);
@@ -75,12 +109,7 @@ export default {
     const rechercheEmployes = async () => {
       isEmployesLoading.value = true;
       try {
-        const data = await ecorideService(
-          "", 
-          "/utilisateur/findUtilisateurEmploye", 
-          "GET", 
-          token
-        );
+        const data = await ecorideService("", "/utilisateur/findUtilisateurEmploye", "GET", token);
         filteredUsers.value = data;
       } catch (error) {
         console.error("Erreur lors de la récupération des employés", error);
@@ -91,12 +120,7 @@ export default {
 
     const changerStatutUtilisateur = async (statut, utilisateurId) => {
       try {
-        await ecorideService(
-          { utilisateurId, statut }, 
-          "/utilisateur/gererStatutUtilisateur", 
-          "PUT", 
-          token
-        );
+        await ecorideService({ utilisateurId, statut }, "/utilisateur/gererStatutUtilisateur", "PUT", token);
         rechercheEmployes();
       } catch (error) {
         console.error("Erreur lors du changement de statut utilisateur", error);
@@ -111,7 +135,6 @@ export default {
           motDePasse: formData.motDePasse,
           role: props.userRole
         };
-
         await ecorideService(credentials, "/utilisateur/creerEmploye", "POST", token);
         rechercheEmployes();
         closeSignUpModal();
@@ -121,7 +144,86 @@ export default {
       rechercheEmployes();
     };
 
+    const afficherStatistiques = async () => {
+  try {
+    const credentials = { mois: selectedMonth.value + 1, annee: selectedYear.value};
+    const response = await ecorideService(credentials, "/statistiques/getStatistiquesForAPeriode", "GET", token);
+    
+    creditStats.value = response.filter(stat => stat.type === 'credit')
+      .map(stat => {
+        // Reformater la date
+        const [day, month, year] = stat.date.split('-');  
+        const formattedDate = `${year}-${month}-${day}`; 
+        const date = new Date(formattedDate);  
+        return {
+          date: date,  // Assurer que la date est un objet Date
+          valeur: stat.valeur,
+        };
+      });
+    
+    renderChart();
+  } catch (error) {
+    console.error("Erreur lors de la récupération des statistiques", error);
+  }
+};
+
+
+const renderChart = () => {
+  const labels = creditStats.value.map(stat => {
+    const statDate = new Date(stat.date);
+    const month = statDate.getMonth() + 1; 
+    const day = statDate.getDate();
+
+    // Formater jour et mois avec un zéro devant si nécessaire
+    const formattedDay = day < 10 ? `0${day}` : day; 
+    const formattedMonth = month < 10 ? `0${month}` : month;
+
+    return `${formattedDay}/${formattedMonth}`; // Format "jour/mois"
+  });
+
+  const values = creditStats.value.map(stat => {
+    console.log(stat.valeur)
+    return stat.valeur;
+  });
+
+
+
+      const ctx = document.getElementById('creditChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Crédits',
+            data: values,
+            borderColor: '#385C05',
+            fill: false,
+            tension: 0.1,
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'Date (Jour/Mois)',
+              },
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Crédit',
+              },
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+    };
+
     onMounted(() => {
+      afficherStatistiques();
       rechercheEmployes();
     });
 
@@ -129,7 +231,12 @@ export default {
       users,
       filteredUsers,
       searchQuery,
-      selectedDate,
+      selectedMonth,
+      selectedYear,
+      months,
+      years,
+      creditStats,
+      filteredStats,
       rechercheEmployes,
       isEmployesLoading,
       selectedUtilisateurId,
@@ -138,10 +245,12 @@ export default {
       closeSignUpModal,
       isModalSignUpVisible,
       creerEmploye,
+      afficherStatistiques,
     };
   },
 };
 </script>
+
 
 <style scoped>
 .gestion-entreprise-container {
@@ -149,16 +258,19 @@ export default {
   gap: 20px;
   padding: 20px;
 }
+
 .users-section, .stats-section {
   width: 50%;
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 8px;
 }
+
 .user-cards {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
 }
+
 .user-card {
   padding: 15px;
   border: 2px solid #ddd;
@@ -172,9 +284,11 @@ export default {
   cursor: pointer;
   transition: all 0.3s ease;
 }
+
 .user-card:hover {
   background: #f4f4f4;
 }
+
 .user-card.selected {
   border-color: #385c05;
   background-color: #eaf5d3;
@@ -199,5 +313,47 @@ export default {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+.stats-section {
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+select {
+  padding: 5px;
+  margin-right: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #f4f4f4;
+}
+
+.chart {
+  margin-top: 20px;
+}
+
+select, button {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.month-select {
+  margin-right: 1em;
 }
 </style>
