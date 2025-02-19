@@ -3,28 +3,21 @@
     <div class="users-section">
       <!-- Section des utilisateurs -->
       <h2>Utilisateurs</h2>
-      <input 
-        type="text" 
-        v-model="searchQuery" 
-        @input="searchUsers" 
-        placeholder="Rechercher un utilisateur..."
-      />
+      <input type="text" v-model="searchQuery" @input="searchUsers" placeholder="Rechercher un utilisateur..." />
       <button @click="openSignUpModal" class="btn-vert">Créer un employé</button>
       <div v-if="isEmployesLoading" class="loader-container">
         <div class="loader"></div>
       </div>
       <div v-else>
         <div class="user-cards">
-          <div 
-            v-for="employe in filteredUsers" 
-            :key="employe?.utilisateurId" 
-            class="user-card"
+          <div v-for="employe in filteredUsers" :key="employe?.utilisateurId" class="user-card"
             :class="{ selected: selectedUtilisateurId === employe?.utilisateurId }"
-            @click="selectedUtilisateurId = employe.utilisateurId"
-          >
+            @click="selectedUtilisateurId = employe.utilisateurId">
             <span>{{ employe?.nom }} ({{ employe?.statut }})</span>
-            <button v-if="employe?.statut === 'ACTIF'" @click="changerStatutUtilisateur('SUSPENDU', employe?.utilisateurId)" class="btn-rouge">Suspendre</button>
-            <button v-if="employe?.statut === 'SUSPENDU'" @click="changerStatutUtilisateur('ACTIF', employe?.utilisateurId)" class="btn-vert">Activer</button>
+            <button v-if="employe?.statut === 'ACTIF'"
+              @click="changerStatutUtilisateur('SUSPENDU', employe?.utilisateurId)" class="btn-rouge">Suspendre</button>
+            <button v-if="employe?.statut === 'SUSPENDU'"
+              @click="changerStatutUtilisateur('ACTIF', employe?.utilisateurId)" class="btn-vert">Activer</button>
           </div>
         </div>
       </div>
@@ -34,7 +27,7 @@
       <h2>Statistiques des Crédits</h2>
 
       <label class="month-select" for="month-select">Sélectionner le mois et l'année :</label>
-      
+
       <select v-model="selectedMonth" id="month-select">
         <option v-for="(month, index) in months" :key="index" :value="index">{{ month }}</option>
       </select>
@@ -53,14 +46,15 @@
     </div>
   </div>
 
-  <SignUpModal v-if="isModalSignUpVisible" :title="'Créer un employé'" :role="'EMPLOYE'" @close="closeSignUpModal" @submit="creerEmploye" />
+  <SignUpModal v-if="isModalSignUpVisible" :title="'Créer un employé'" :role="'EMPLOYE'" @close="closeSignUpModal"
+    @submit="creerEmploye" />
 </template>
 
 <script>
 import { ref, onMounted, computed } from 'vue';
 import { ecorideService } from "@/services/backend-api.js";
 import { useAuthStore } from "@/stores/authStore";
-import SignUpModal from "@/components/modal/SignUpModal.vue"; 
+import SignUpModal from "@/components/modal/SignUpModal.vue";
 import Chart from 'chart.js/auto';
 
 export default {
@@ -75,9 +69,10 @@ export default {
     const selectedMonth = ref(new Date().getMonth());
     const selectedYear = ref(new Date().getFullYear());
     const creditStats = ref([]);
+    let currentChart = null;
 
     const months = [
-      "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", 
+      "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
       "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
     ];
 
@@ -145,51 +140,53 @@ export default {
     };
 
     const afficherStatistiques = async () => {
-  try {
-    const credentials = { mois: selectedMonth.value + 1, annee: selectedYear.value};
-    const response = await ecorideService(credentials, "/statistiques/getStatistiquesForAPeriode", "GET", token);
-    
-    creditStats.value = response.filter(stat => stat.type === 'credit')
-      .map(stat => {
-        // Reformater la date
-        const [day, month, year] = stat.date.split('-');  
-        const formattedDate = `${year}-${month}-${day}`; 
-        const date = new Date(formattedDate);  
-        return {
-          date: date,  // Assurer que la date est un objet Date
-          valeur: stat.valeur,
-        };
+      try {
+        const credentials = { mois: selectedMonth.value + 1, annee: selectedYear.value };
+        const response = await ecorideService(credentials, "/statistiques/getStatistiquesForAPeriode", "GET", token);
+
+        creditStats.value = response.filter(stat => stat.type === 'credit')
+          .map(stat => {
+            // Reformater la date
+            const [day, month, year] = stat.date.split('-');
+            const formattedDate = `${year}-${month}-${day}`;
+            const date = new Date(formattedDate);
+            return {
+              date: date,  // Assurer que la date est un objet Date
+              valeur: stat.valeur,
+            };
+          });
+
+        renderChart();
+      } catch (error) {
+        console.error("Erreur lors de la récupération des statistiques", error);
+      }
+    };
+
+
+    const renderChart = () => {
+      const labels = creditStats.value.map(stat => {
+        const statDate = new Date(stat.date);
+        const month = statDate.getMonth() + 1;
+        const day = statDate.getDate();
+
+        // Formater jour et mois avec un zéro devant si nécessaire
+        const formattedDay = day < 10 ? `0${day}` : day;
+        const formattedMonth = month < 10 ? `0${month}` : month;
+
+        return `${formattedDay}/${formattedMonth}`; // Format "jour/mois"
       });
-    
-    renderChart();
-  } catch (error) {
-    console.error("Erreur lors de la récupération des statistiques", error);
-  }
-};
 
+      const values = creditStats.value.map(stat => {
+        console.log(stat.valeur)
+        return stat.valeur;
+      });
 
-const renderChart = () => {
-  const labels = creditStats.value.map(stat => {
-    const statDate = new Date(stat.date);
-    const month = statDate.getMonth() + 1; 
-    const day = statDate.getDate();
-
-    // Formater jour et mois avec un zéro devant si nécessaire
-    const formattedDay = day < 10 ? `0${day}` : day; 
-    const formattedMonth = month < 10 ? `0${month}` : month;
-
-    return `${formattedDay}/${formattedMonth}`; // Format "jour/mois"
-  });
-
-  const values = creditStats.value.map(stat => {
-    console.log(stat.valeur)
-    return stat.valeur;
-  });
-
-
+      if (currentChart) {
+        currentChart.destroy();
+      }
 
       const ctx = document.getElementById('creditChart').getContext('2d');
-      new Chart(ctx, {
+      currentChart = new Chart(ctx, {
         type: 'line',
         data: {
           labels: labels,
@@ -259,7 +256,8 @@ const renderChart = () => {
   padding: 20px;
 }
 
-.users-section, .stats-section {
+.users-section,
+.stats-section {
   width: 50%;
   padding: 20px;
   border: 1px solid #ddd;
@@ -311,8 +309,13 @@ const renderChart = () => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .stats-section {
@@ -332,7 +335,8 @@ table {
   margin-top: 20px;
 }
 
-th, td {
+th,
+td {
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #ddd;
@@ -346,7 +350,8 @@ th {
   margin-top: 20px;
 }
 
-select, button {
+select,
+button {
   padding: 10px;
   font-size: 16px;
   border: 1px solid #ccc;
