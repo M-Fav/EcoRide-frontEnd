@@ -303,6 +303,7 @@ export default {
       isVoituresLoading,
       showCreerVoitureModal,
       showCreerAvisModal,
+      showGererAvisModal,
       openCreateCarModal,
       closeCreateCarModal,
       openCreerAvisModal,

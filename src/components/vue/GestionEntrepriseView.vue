@@ -186,13 +186,6 @@ export default {
 
       const creditValues = creditStats.value.map(stat => stat.valeur);
 
-      /*// Labels pour les covoiturages
-      const covoiturageLabels = covoiturageStats.value.map(stat => {
-        const statDate = new Date(stat.date);
-        const formattedDay = String(statDate.getDate()).padStart(2, '0');
-        const formattedMonth = String(statDate.getMonth() + 1).padStart(2, '0');
-        return `${formattedDay}/${formattedMonth}`;
-      });*/
 
       const covoiturageValues = covoiturageStats.value.map(stat => stat.valeur);
 
