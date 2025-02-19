@@ -70,6 +70,7 @@
             <img src="../../assets/images/leaf.png" class="credit-icon" />
           </div>
           <button @click="ajouterCredits" class="btn-vert">Alimenter crédits</button>
+          <button v-if="user?.role === 'EMPLOYE' || user?.role === 'ADMINISTRATEUR'" @click="openGererAvisModal" class="btn-vert">Gérer avis</button>
         </div>
       </div>
 
@@ -97,10 +98,12 @@
     </div>
   </div>
 
-  <!-- Modale pour créer une voiture -->
   <CreerVoitureModal :showModal="showCreerVoitureModal" @close="closeCreateCarModal" @carCreated="fetchVoitures" />
 
-  <CreerAvisModal :showModal="showAvisModal" :covoitureurId="covoitureurId" @close="closeAvisModal" />
+  <CreerAvisModal :showModal="showCreerAvisModal" :covoitureurId="covoitureurId" @close="closeCreerAvisModal" />
+
+  <GererAvisModal :showModal="showGererAvisModal" :covoitureurId="covoitureurId" @close="closeGererAvisModal" />
+
 </template>
 
 <script>
@@ -109,11 +112,12 @@ import { ecorideService } from "@/services/backend-api.js";
 import { useAuthStore } from "@/stores/authStore";
 import CreerVoitureModal from "../modal/CreerVoitureModal.vue";
 import CreerAvisModal from "../modal/CreerAvisModal.vue";
+import GererAvisModal from "../modal/GererAvisModal.vue";
 
 export default {
   name: "UtilisateurView",
   components: {
-    CreerVoitureModal, CreerAvisModal
+    CreerVoitureModal, CreerAvisModal, GererAvisModal,
   },
   setup() {
     const user = inject("user");
@@ -128,7 +132,8 @@ export default {
     const isCovoituragesLoading = ref(false);
     const isVoituresLoading = ref(false);
     const showCreerVoitureModal = ref(false);
-    const showAvisModal = ref(false);
+    const showCreerAvisModal = ref(false);
+    const showGererAvisModal = ref(false);
     const historiquePasses = ref([]);
     const historiqueEnCours = ref([]);
 
@@ -206,13 +211,21 @@ export default {
       showCreerVoitureModal.value = false;
     };
 
-    const openAvisModal = (id) => {
+    const openCreerAvisModal = (id) => {
       covoitureurId.value = id;
-      showAvisModal.value = true;
+      showCreerAvisModal.value = true;
     };
 
-    const closeAvisModal = () => {
-      showAvisModal.value = false;
+    const closeCreerAvisModal = () => {
+      showCreerAvisModal.value = false;
+    };
+
+    const openGererAvisModal = () => {
+      showGererAvisModal.value = true;
+    };
+
+    const closeGererAvisModal = () => {
+      showGererAvisModal.value = false;
     };
 
     // Fonction pour démarrer un covoiturage
@@ -256,7 +269,7 @@ export default {
           token
         );
         console.log('Covoiturage validé:', response);
-        openAvisModal(covoitureurId);
+        openCreerAvisModal(covoitureurId);
         fetchCovoiturages(); // Met à jour l'historique
       } catch (error) {
         console.error("Erreur lors de la fin du covoiturage:", error);
@@ -289,11 +302,13 @@ export default {
       isCovoituragesLoading,
       isVoituresLoading,
       showCreerVoitureModal,
-      showAvisModal,
+      showCreerAvisModal,
       openCreateCarModal,
       closeCreateCarModal,
-      openAvisModal,
-      closeAvisModal,
+      openCreerAvisModal,
+      closeCreerAvisModal,
+      openGererAvisModal,
+      closeGererAvisModal,
       fetchVoitures,
       ajouterCredits,
       historiquePasses,

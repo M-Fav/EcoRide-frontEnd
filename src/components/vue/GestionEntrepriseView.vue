@@ -3,7 +3,6 @@
     <div class="users-section">
       <!-- Section des utilisateurs -->
       <h2>Utilisateurs</h2>
-      <input type="text" v-model="searchQuery" @input="searchUsers" placeholder="Rechercher un utilisateur..." />
       <button @click="openSignUpModal" class="btn-vert">Créer un employé</button>
       <div v-if="isEmployesLoading" class="loader-container">
         <div class="loader"></div>
@@ -69,6 +68,7 @@ export default {
     const selectedMonth = ref(new Date().getMonth());
     const selectedYear = ref(new Date().getFullYear());
     const creditStats = ref([]);
+    const covoiturageStats = ref([]);
     let currentChart = null;
 
     const months = [
@@ -156,6 +156,18 @@ export default {
             };
           });
 
+        covoiturageStats.value = response.filter(stat => stat.type === 'covoiturage')
+          .map(stat => {
+            // Reformater la date
+            const [day, month, year] = stat.date.split('-');
+            const formattedDate = `${year}-${month}-${day}`;
+            const date = new Date(formattedDate);
+            return {
+              date: date,  // Assurer que la date est un objet Date
+              valeur: stat.valeur,
+            };
+          });
+
         renderChart();
       } catch (error) {
         console.error("Erreur lors de la récupération des statistiques", error);
@@ -164,22 +176,25 @@ export default {
 
 
     const renderChart = () => {
+      // Labels pour l'axe X basés sur les crédits uniquement
       const labels = creditStats.value.map(stat => {
         const statDate = new Date(stat.date);
-        const month = statDate.getMonth() + 1;
-        const day = statDate.getDate();
-
-        // Formater jour et mois avec un zéro devant si nécessaire
-        const formattedDay = day < 10 ? `0${day}` : day;
-        const formattedMonth = month < 10 ? `0${month}` : month;
-
-        return `${formattedDay}/${formattedMonth}`; // Format "jour/mois"
+        const formattedDay = String(statDate.getDate()).padStart(2, '0');
+        const formattedMonth = String(statDate.getMonth() + 1).padStart(2, '0');
+        return `${formattedDay}/${formattedMonth}`;
       });
 
-      const values = creditStats.value.map(stat => {
-        console.log(stat.valeur)
-        return stat.valeur;
-      });
+      const creditValues = creditStats.value.map(stat => stat.valeur);
+
+      /*// Labels pour les covoiturages
+      const covoiturageLabels = covoiturageStats.value.map(stat => {
+        const statDate = new Date(stat.date);
+        const formattedDay = String(statDate.getDate()).padStart(2, '0');
+        const formattedMonth = String(statDate.getMonth() + 1).padStart(2, '0');
+        return `${formattedDay}/${formattedMonth}`;
+      });*/
+
+      const covoiturageValues = covoiturageStats.value.map(stat => stat.valeur);
 
       if (currentChart) {
         currentChart.destroy();
@@ -189,14 +204,23 @@ export default {
       currentChart = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: labels,
-          datasets: [{
-            label: 'Crédits',
-            data: values,
-            borderColor: '#385C05',
-            fill: false,
-            tension: 0.1,
-          }]
+          labels: labels, // Labels des crédits UNIQUEMENT
+          datasets: [
+            {
+              label: 'Crédits',
+              data: creditValues,
+              borderColor: '#385C05',
+              fill: false,
+              tension: 0.1,
+            },
+            {
+              label: 'Covoiturage',
+              data: covoiturageValues,
+              borderColor: '#FF5733', // Couleur différente
+              fill: false,
+              tension: 0.1,
+            }
+          ]
         },
         options: {
           responsive: true,
@@ -206,18 +230,25 @@ export default {
                 display: true,
                 text: 'Date (Jour/Mois)',
               },
+              ticks: {
+                autoSkip: true, // Évite le chevauchement
+                maxRotation: 0, // Empêche la rotation des labels
+                minRotation: 0,
+              }
             },
             y: {
               title: {
                 display: true,
-                text: 'Crédit',
+                text: 'Valeur',
               },
               beginAtZero: true,
             },
           },
         },
       });
+
     };
+
 
     onMounted(() => {
       afficherStatistiques();

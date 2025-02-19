@@ -51,6 +51,6 @@ export default {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  /* S'assure que #app occupe toute la hauteur de la fenêtre */
+  font-family: 'Poppins', sans-serif;
 }
 </style>

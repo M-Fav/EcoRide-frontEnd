@@ -5,7 +5,7 @@
       <h1>Bienvenue sur notre site</h1>
       <p class="intro">
         <span class="highlight">🌿 Qui sommes-nous ?</span><br>
-        Bienvenue sur <strong>[Nom de votre site]</strong>, la plateforme de covoiturage écoresponsable qui allie
+        Bienvenue sur <strong>ECORIDE</strong>, la plateforme de covoiturage écoresponsable qui allie
         mobilité et respect de l’environnement. 🚗💚
       </p>
       <p>

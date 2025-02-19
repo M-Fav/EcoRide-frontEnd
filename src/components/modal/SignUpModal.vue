@@ -42,9 +42,9 @@
           <label for="photo">Photo</label>
           <input id="photo" type="file" @change="handleFileUpload" />
         </div>
-        <button type="submit">S'inscrire</button>
+        <button class="btn-vert btn-signup" type="submit">S'inscrire</button>
       </form>
-      <button class="close-button" @click="closeModal">Fermer</button>
+      <button class="btn-rouge btn-close-position" @click="closeModal">Fermer</button>
     </div>
   </div>
 </template>
@@ -201,36 +201,7 @@ input:focus {
   margin-top: 1rem;
 }
 
-button {
+.btn-signup {
   width: 100%;
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-top: 1rem;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-.close-button {
-  background-color: #ff0000;
-  width: auto;
-  padding: 8px 16px;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-}
-
-.close-button:hover {
-  background-color: #cc0000;
 }
 </style>
