@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  /* Évite les débordements horizontaux */
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #EDEFE4;
+  display: flex;
+  flex-direction: column;
+}
+
+.btn-vert {
+  background-color: #385C05;
+  color: #EDEFE4;
+  cursor: pointer;
+  padding: 7px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 0.5rem;
+}
+
+.btn-vert:hover {
+  background-color: #22963d;
+}
+
+.btn-rouge {
+  background-color: #a70000;
+  color: #EDEFE4;
+  cursor: pointer;
+  padding: 7px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 0.5rem;
+}
+
+.btn-rouge:hover {
+  background-color: #cc0000;
+}
+
+.btn-orange {
+  background-color: #f39c12;
+  color: #EDEFE4;
+  cursor: pointer;
+  padding: 7px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 0.5rem;
+}
+
+.btn-orange:hover {
+  opacity: 0.8;
+}
+
+.btn-close-position {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.content {
+  flex: 1;
+  /* Permet à la section content de remplir l'espace restant */
+  width: 100%;
+  /* Évite tout dépassement */
+}
+
+/* Barre horizontale sous le titre */
+.modal-divider {
+  width: 100%;
+  height: 2px;
+  background-color: #385C05;
+  margin: 10px 0;
+  border: none;
+}
+
+.modal-content {
+  background-color: #EDEFE4;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
