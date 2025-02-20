@@ -4,6 +4,7 @@ import CovoituragesView from '@/components/vue/CovoituragesView.vue'
 import AccueilView from '@/components/vue/AccueilView.vue';
 import UtilisateurView from '@/components/vue/UtilisateurView.vue';
 import GestionEntrepriseView from '@/components/vue/GestionEntrepriseView.vue';
+import ContactView from '@/components/vue/ContactView.vue';
 
 const routes = [
   {
@@ -32,6 +33,11 @@ const routes = [
     name: 'gestionEntreprise',
     component: GestionEntrepriseView
   },
+  {
+    path: '/contact',
+    name: 'contact',
+    component: ContactView
+  }
 ];
 
 const router = createRouter({

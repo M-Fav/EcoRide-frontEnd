@@ -29,8 +29,8 @@
 
     <!-- Images à droite -->
     <div class="image-section">
-      <img src="../../assets/images/logoEcoRide.png" class="image" />
-      <img src="../../assets/images/logoEcoRide.png" class="image" />
+      <img src="../../assets/images/ImageAccueil.png" class="image" />
+      <img src="../../assets/images/ImageAccueil2.png" class="image" />
     </div>
   </div>
 </template>
@@ -103,11 +103,12 @@ export default {
 
 .image {
   width: 80%;
-  max-height: 200px;
+  max-height: 300px;
   object-fit: cover;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -119,10 +120,6 @@ export default {
   .text-section {
     width: 100%;
     padding-right: 0;
-  }
-
-  .image-section {
-    width: 100%;
   }
 }
 </style>

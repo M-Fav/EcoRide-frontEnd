@@ -28,7 +28,7 @@
             <input id="couleur" type="text" v-model="couleur" placeholder="Couleur" required />
           </div>
           <div>
-            <label for="datePremiereImmatriculation">Date de première immatriculation</label>
+            <label for="datePremiereImmatriculation">Date immatriculation</label>
             <input id="datePremiereImmatriculation" type="date" v-model="datePremiereImmatriculation"
               placeholder="Date première immatriculation" required />
           </div>

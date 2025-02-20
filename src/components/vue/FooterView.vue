@@ -2,22 +2,51 @@
   <footer class="footer">
     <div class="footer-content">
       <div class="footer-left">
-        <p>Adresse table donnee_entreprise</p>
+        <p>{{ getDonneeEntreprise("formeJuridique")?.valeur + " " + getDonneeEntreprise("nomEntreprise")?.valeur }}</p>
+        <p>Siège social: {{ getDonneeEntreprise("siegeSocial")?.valeur }}</p>
       </div>
       <div class="footer-center">
         <img alt="Vue logo" src="../../assets/images/logoEcoRide.png" class="footerLogo" />
       </div>
       <div class="footer-right">
-        <p>Email: mail table donnee_entreprise</p>
-        <p>Téléphone: téléphone table donnee_entreprise</p>
+        <p>Email: {{ getDonneeEntreprise("email")?.valeur }} </p>
+        <p>Hébergement: {{ getDonneeEntreprise("hebergeurs")?.valeur }}</p>
       </div>
     </div>
   </footer>
 </template>
 
 <script>
+
+import { onMounted, ref } from "vue";
+import { ecorideService } from '@/services/backend-api';
+
 export default {
   name: "FooterView",
+  setup() {
+
+    let data = ref([]);
+
+    const getDonneeEntreprise = (libelle) => {
+      return data.value.find(item => item.libelle === libelle) || null;
+    }
+
+    const getAllDonneesEntreprise = async () => {
+      try {
+        data.value = await ecorideService("", "/donneesEntreprise", "GET");
+      } catch (error) {
+        console.error("Erreur lors de la récupération des données :", error);
+        data.value = [];
+      }
+    }
+
+    onMounted(getAllDonneesEntreprise);
+
+    return {
+      data,
+      getDonneeEntreprise,
+    };
+  }
 };
 </script>
 
