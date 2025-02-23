@@ -84,4 +84,24 @@ export default {
   height: 100px;
   object-fit: contain;
 }
+
+@media screen and (max-width: 768px) {
+  .footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+  }
+
+  .footer-content {
+    font-size: 9px;
+  }
+
+  .footerLogo {
+    display: none;
+  }
+
+  .footer-content {
+    display: inline;
+  }
+}
 </style>

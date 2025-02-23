@@ -110,8 +110,7 @@ export default {
 }
 
 
-/* Responsive */
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
   .container {
     flex-direction: column;
     text-align: center;
@@ -121,5 +120,10 @@ export default {
     width: 100%;
     padding-right: 0;
   }
+
+  .image-section {
+      display: none;
+    }
+
 }
 </style>

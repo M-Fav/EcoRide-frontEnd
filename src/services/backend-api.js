@@ -1,7 +1,7 @@
 import axios from "axios";
 
-//const API_BASE_URL = "http://localhost:8080";
-const API_BASE_URL = "https://ecoride-service-4d84c02e7cd5.herokuapp.com";
+const API_BASE_URL = "http://localhost:8080";
+//const API_BASE_URL = "https://ecoride-service-4d84c02e7cd5.herokuapp.com";
 
 export async function ecorideService(credentials, endpoint, method, token) {
   try {
@@ -45,7 +45,7 @@ export async function ecorideService(credentials, endpoint, method, token) {
       console.error("⚠️ Réponse du serveur :", error.response);
       console.error("📩 Erreur détaillée :", JSON.stringify(error.response.data, null, 2));
     }
-    throw error.response?.data?.message || "Une erreur est survenue.";
+    throw error.response?.data?.erreur  || "Une erreur est survenue.";
   }
 }
 

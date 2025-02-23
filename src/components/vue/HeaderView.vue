@@ -1,11 +1,15 @@
 <template>
   <header class="header">
     <div class="header-content">
-      <!-- Logo à gauche et plus petit -->
+
       <img alt="Vue logo" src="../../assets/images/logoEcoRide.png" class="headerLogo" />
 
+      <button @click="toggleMenu" class="burger-btn">
+        &#9776;
+      </button>
+
       <!-- Navigation centrée en bas -->
-      <nav>
+      <nav :class="{ 'menu-open': isMenuOpen, 'hidden': !isMenuOpen }" class="nav-menu">
         <ul>
           <li><router-link to="/accueil">Accueil</router-link></li>
           <li><router-link to="/covoiturages">Covoiturages</router-link></li>
@@ -27,7 +31,6 @@
         <img @click="logout" src="../../assets/images/iconeLogout.png" alt="Déconnexion" class="logout-icon" />
       </div>
 
-      <!-- Si l'utilisateur n'est PAS connecté, afficher les boutons de connexion -->
       <div v-else class="auth-buttons">
         <button @click="openLoginModal" class="login-btn">Se connecter</button>
         <button @click="openSignUpModal" class="signup-btn">S'inscrire</button>
@@ -53,6 +56,11 @@ const isAuthenticated = computed(() => authStore.isAuthenticated);
 const role = computed(() => authStore.user.role);
 const user = computed(() => authStore.user);
 const userPhoto = computed(() => user.value?.photo || new URL("@/assets/images/iconeUser.png", import.meta.url).href);
+const isMenuOpen = ref(false);
+
+const toggleMenu = () => {
+  isMenuOpen.value = !isMenuOpen.value;
+};
 
 const logout = () => {
   router.push("/accueil");
@@ -121,14 +129,21 @@ export default {
   /* Espace à gauche */
 }
 
+.burger-btn {
+  font-size: 30px;
+  background: none;
+  border: none;
+  color: #385C05;
+  cursor: pointer;
+  display: block;
+}
+
 nav {
   width: 100%;
   display: flex;
   justify-content: center;
-  /* Centre la barre de navigation */
   position: absolute;
   bottom: 10px;
-  /* Place la barre de navigation en bas */
 }
 
 nav ul {
@@ -140,11 +155,6 @@ nav ul {
   padding: 0;
 }
 
-a {
-  color: #EDEFE4;
-  text-decoration: none;
-  padding: 0.5rem;
-}
 
 a {
   color: #EDEFE4;
@@ -234,9 +244,6 @@ a:hover::before {
   margin: 0.5rem;
 }
 
-
-
-
 .logout-btn:hover {
   background: #d4d6cb;
 }
@@ -266,5 +273,84 @@ a:hover::before {
   width: 24px;
   height: 24px;
   vertical-align: middle;
+}
+
+@media screen and (max-width: 768px) {
+  .header {
+    background-color: #EDEFE4;
+    border-bottom: 6px solid #EDEFE4;
+    align-items: center;
+  }
+
+  .header-content {
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    position: relative;
+  }
+
+  .headerLogo {
+    height: 100px; 
+    margin-left: 0; 
+    margin-bottom: 10px; 
+  }
+
+  .burger-btn {
+    display: block;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+  }
+
+  .nav-menu {
+    position: absolute;
+    top: 50px;
+    display: none;
+  }
+
+  .nav-menu.menu-open {
+    display: block;
+  }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column; /* Colonne verticale */
+    align-items: flex-start;
+    font-size: small; 
+    gap: 0;
+  }
+
+  nav a {
+    color: #385C05;
+  }
+
+  .auth-buttons {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .login-btn {
+    border-color: #EDEFE4;
+    padding: 0;
+    font-size: 12px;
+    
+  }
+
+  .signup-btn {
+    border-color: #EDEFE4;
+    padding: 0;
+    font-size: 12px;
+  }
+
+  .user-info {
+    background-color : #385C05;
+    border-radius: 10%;
+    padding: 7px;
+    font-size: x-small;
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
 }
 </style>

@@ -69,7 +69,7 @@
             <span class="user-credit">{{ user?.credit }}</span>
             <img src="../../assets/images/leaf.png" class="credit-icon" />
           </div>
-          <button @click="ajouterCredits" class="btn-vert">Alimenter crédits</button>
+          <button @click="openAjouterCreditModal" class="btn-vert">Alimenter crédits</button>
           <button v-if="user?.role === 'EMPLOYE' || user?.role === 'ADMINISTRATEUR'" @click="openGererAvisModal" class="btn-vert">Gérer avis</button>
         </div>
       </div>
@@ -104,6 +104,8 @@
 
   <GererAvisModal :showModal="showGererAvisModal" :covoitureurId="covoitureurId" @close="closeGererAvisModal" />
 
+  <AjouterCreditModal :showModal="showAjouterCreditModal"  @close="closeAjouterCreditModal" />
+
 </template>
 
 <script>
@@ -113,11 +115,12 @@ import { useAuthStore } from "@/stores/authStore";
 import CreerVoitureModal from "../modal/CreerVoitureModal.vue";
 import CreerAvisModal from "../modal/CreerAvisModal.vue";
 import GererAvisModal from "../modal/GererAvisModal.vue";
+import AjouterCreditModal from "../modal/AjouterCreditModal.vue";
 
 export default {
   name: "UtilisateurView",
   components: {
-    CreerVoitureModal, CreerAvisModal, GererAvisModal,
+    CreerVoitureModal, CreerAvisModal, GererAvisModal, AjouterCreditModal,
   },
   setup() {
     const user = inject("user");
@@ -134,6 +137,7 @@ export default {
     const showCreerVoitureModal = ref(false);
     const showCreerAvisModal = ref(false);
     const showGererAvisModal = ref(false);
+    const showAjouterCreditModal = ref(false);
     const historiquePasses = ref([]);
     const historiqueEnCours = ref([]);
 
@@ -201,8 +205,6 @@ export default {
       fetchCovoiturages();
     });
 
-    const ajouterCredits = () => alert("Ajout de crédits en cours...");
-
     const openCreateCarModal = () => {
       showCreerVoitureModal.value = true;
     };
@@ -227,6 +229,15 @@ export default {
     const closeGererAvisModal = () => {
       showGererAvisModal.value = false;
     };
+
+    const openAjouterCreditModal = () => {
+      showAjouterCreditModal.value = true;
+    }
+
+    const closeAjouterCreditModal = () => {
+      showAjouterCreditModal.value = false;
+    };
+
 
     // Fonction pour démarrer un covoiturage
     const demarrerCovoiturage = async (id) => {
@@ -304,14 +315,16 @@ export default {
       showCreerVoitureModal,
       showCreerAvisModal,
       showGererAvisModal,
+      showAjouterCreditModal,
       openCreateCarModal,
       closeCreateCarModal,
       openCreerAvisModal,
       closeCreerAvisModal,
       openGererAvisModal,
       closeGererAvisModal,
+      openAjouterCreditModal,
+      closeAjouterCreditModal,
       fetchVoitures,
-      ajouterCredits,
       historiquePasses,
       historiqueEnCours,
       demarrerCovoiturage,

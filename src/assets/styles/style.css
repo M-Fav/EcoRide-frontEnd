@@ -5,13 +5,12 @@ body {
   width: 100%;
   height: 100%;
   overflow-x: hidden;
-  /* Évite les débordements horizontaux */
-  font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #EDEFE4;
   display: flex;
   flex-direction: column;
+  margin: 0;
 }
 
 .btn-vert {
@@ -67,9 +66,7 @@ body {
 
 .content {
   flex: 1;
-  /* Permet à la section content de remplir l'espace restant */
   width: 100%;
-  /* Évite tout dépassement */
 }
 
 /* Barre horizontale sous le titre */
