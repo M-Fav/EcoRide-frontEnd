@@ -52,7 +52,7 @@ export default {
         closeModal();
       } catch (errorMessage) {
         console.error("Erreur lors de la connexion :", errorMessage);
-        error.value = "Échec de la connexion. Vérifiez vos identifiants.";
+        error.value = errorMessage;
       }
     };
 
