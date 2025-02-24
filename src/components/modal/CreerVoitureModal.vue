@@ -4,33 +4,42 @@
       <h2>Créer une voiture</h2>
       <hr class="modal-divider">
 
-      <!-- Formulaire pour créer une voiture -->
       <form @submit.prevent="createCar">
         <div class="form-grid">
           <div>
             <label for="marque">Marque</label>
-            <input id="marque" type="text" v-model="marque" placeholder="Marque" required />
+            <select id="marque" v-model="marque" required>
+              <option value="" disabled>Marque</option>
+              <option v-for="m in marquesDisponibles" :key="m" :value="m">{{ m }}</option>
+            </select>
           </div>
+
           <div>
             <label for="modele">Modèle</label>
             <input id="modele" type="text" v-model="modele" placeholder="Modèle" required />
           </div>
+
           <div>
             <label for="immatriculation">Immatriculation</label>
             <input id="immatriculation" type="text" v-model="immatriculation" placeholder="Immatriculation" required />
           </div>
+
           <div>
             <label for="energie">Énergie</label>
-            <input id="energie" type="text" v-model="energie" placeholder="Énergie" required />
+            <select id="energie" v-model="energie" required>
+              <option value="" disabled>Energie</option>
+              <option v-for="e in energiesDisponibles" :key="e" :value="e">{{ e }}</option>
+            </select>
           </div>
+
           <div>
             <label for="couleur">Couleur</label>
             <input id="couleur" type="text" v-model="couleur" placeholder="Couleur" required />
           </div>
+
           <div>
             <label for="datePremiereImmatriculation">Date immat.</label>
-            <input id="datePremiereImmatriculation" type="date" v-model="datePremiereImmatriculation"
-              placeholder="Date première immatriculation" required />
+            <input id="datePremiereImmatriculation" type="date" v-model="datePremiereImmatriculation" required />
           </div>
         </div>
 
@@ -44,20 +53,20 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import dayjs from "dayjs";
 import { useAuthStore } from "@/stores/authStore";
 import { ecorideService } from "@/services/backend-api.js";
 
 export default {
   props: {
-    showModal: Boolean, // Contrôle l'affichage de la modale
-    existingCarData: Object, // Reçoit les données JSON lors de l'appel
+    showModal: Boolean,
+    existingCarData: Object,
   },
   setup(props, { emit }) {
-
     const authStore = useAuthStore();
-    const token = computed(() => authStore.token);
+
+    // Champs du formulaire
     const marque = ref("");
     const modele = ref("");
     const immatriculation = ref("");
@@ -65,6 +74,18 @@ export default {
     const couleur = ref("");
     const datePremiereImmatriculation = ref("");
 
+    const marquesDisponibles = ref([
+      "TOYOTA", "VOLKSWAGEN", "MERCEDES_BENZ", "BMW", "AUDI",
+      "FORD", "HONDA", "CHEVROLET", "NISSAN", "HYUNDAI",
+      "KIA", "PEUGEOT", "RENAULT", "TESLA", "FIAT",
+      "JEEP", "VOLVO", "LAND_ROVER", "PORSCHE", "MAZDA",
+      "SUBARU", "SUZUKI", "LEXUS", "FERRARI", "LAMBORGHINI",
+      "ASTON_MARTIN", "BUGATTI", "MASERATI", "BENTLEY", "ROLLS_ROYCE"
+    ]);
+
+    const energiesDisponibles = ref([
+      "ESSENCE", "DIESEL", "ELECTRIQUE", "HYBRIDE"
+    ]);
 
     const closeModal = () => {
       emit("close");
@@ -82,12 +103,12 @@ export default {
           datePremiereImmatriculation: dayjs(datePremiereImmatriculation.value, "YYYY-MM-DD").format("YYYY-MM-DD"),
         };
 
-        const data = await ecorideService(credentials, "/voitures/creationVoiture", "POST", token.value);
-        console.log("Voiture créé :", data);
+        const data = await ecorideService(credentials, "/voitures/creationVoiture", "POST", authStore.token);
+        console.log("Voiture créée :", data);
         emit("carCreated");
         closeModal();
-      } catch (errorMessage) {
-        console.error("Erreur lors de la création de la voiture :", errorMessage);
+      } catch (error) {
+        console.error("Erreur lors de la création de la voiture :", error);
       }
     };
 
@@ -98,12 +119,15 @@ export default {
       energie,
       couleur,
       datePremiereImmatriculation,
+      marquesDisponibles,
+      energiesDisponibles,
       closeModal,
       createCar,
     };
   },
 };
 </script>
+
 
 
 <style scoped>
@@ -156,6 +180,16 @@ input:focus {
   border-color: #007bff;
   outline: none;
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 1rem;
 }
 
 .modal-actions {
