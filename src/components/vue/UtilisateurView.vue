@@ -4,7 +4,7 @@
     <div class="history-section">
       <div class="history-cards">
         <!-- Covoiturages passés -->
-        <div class="history-column">
+        <div class="history-column covoiturage-passe">
           <h3>Covoiturages passés</h3>
           <div v-if="isCovoituragesLoading" class="loader-container">
             <div class="loader"></div>
@@ -22,7 +22,7 @@
         </div>
 
         <!-- Covoiturages en cours -->
-        <div class="history-column">
+        <div class="history-column covoiturage-encours">
           <h3>Covoiturages en cours</h3>
           <div v-if="isCovoituragesLoading" class="loader-container">
             <div class="loader"></div>
@@ -517,5 +517,24 @@ export default {
   100% {
     transform: rotate(360deg);
   }
+}
+
+@media screen and (max-width: 768px) {
+  .covoiturage-passe { 
+    display: none;
+  }
+
+  .history-cards {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .user-space {
+    display: flex;
+    flex-direction: column;
+  }
+
+
 }
 </style>

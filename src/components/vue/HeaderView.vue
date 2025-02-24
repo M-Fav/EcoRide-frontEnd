@@ -8,7 +8,7 @@
         &#9776;
       </button>
 
-      <!-- Navigation centrée en bas -->
+      <!-- Navigation centrée en bas pour affichage mobile -->
       <nav :class="{ 'menu-open': isMenuOpen, 'hidden': !isMenuOpen }" class="nav-menu">
         <ul>
           <li><router-link to="/accueil">Accueil</router-link></li>
@@ -43,7 +43,7 @@
 </template>
 
 <script setup>
-import { computed, nextTick } from "vue";
+import { computed, nextTick, onMounted, onUnmounted } from "vue";
 import { ref } from "vue";
 import { useAuthStore } from "@/stores/authStore";
 import { useRouter } from "vue-router";
@@ -61,6 +61,23 @@ const isMenuOpen = ref(false);
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value;
 };
+
+// Clic sur le document pour fermer le menu si on clique ailleurs
+const handleClickOutside = (event) => {
+  const burgerBtn = document.querySelector('.burger-btn');
+  const menu = document.querySelector('.nav-menu');
+  if (burgerBtn && !burgerBtn.contains(event.target) && menu && !menu.contains(event.target)) {
+    isMenuOpen.value = false;
+  }
+};
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
 
 const logout = () => {
   router.push("/accueil");
@@ -123,10 +140,8 @@ export default {
 
 .headerLogo {
   height: 150px;
-  /* Réduit la taille du logo */
   width: auto;
   margin-left: 1em;
-  /* Espace à gauche */
 }
 
 .burger-btn {
@@ -161,7 +176,6 @@ a {
   text-decoration: none;
   padding: 0.5rem;
   position: relative;
-  /* Ajouté pour fixer le problème */
 }
 
 a::before {
@@ -315,10 +329,11 @@ a:hover::before {
   nav ul {
     list-style: none;
     display: flex;
-    flex-direction: column; /* Colonne verticale */
+    flex-direction: column;
     align-items: flex-start;
     font-size: small; 
     gap: 0;
+    max-width: 48%;
   }
 
   nav a {

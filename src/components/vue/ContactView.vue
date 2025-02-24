@@ -66,4 +66,27 @@ export default {
     justify-content: center;
     text-align: left;
 }
+
+@media screen and (max-width: 768px) {
+    .contact-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .contact-info {
+        display: block;
+        margin-top: 2rem;
+        width: auto;
+        text-align: center;
+    }
+
+    .image {
+        max-width: 80%;
+        border-radius: 15%;
+    }
+
+    .contact-container {
+        gap: 0;
+    }
+}
 </style>
