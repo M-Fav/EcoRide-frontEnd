@@ -385,4 +385,26 @@ button {
 .month-select {
   margin-right: 1em;
 }
+
+@media screen and (max-width: 768px) {
+
+  .gestion-entreprise-container {
+    flex-direction: column;
+  }
+
+  .users-section {
+    width: auto;
+  }
+
+  .stats-section {
+    width: auto;
+  }
+
+  .user-cards {
+    display: flex;
+    flex-direction: column;
+    max-height: 15rem;
+    overflow-y: auto;
+  }
+}
 </style>

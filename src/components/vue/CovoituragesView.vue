@@ -28,11 +28,12 @@
           </div>
           <div class="covoiturage-details">
             <div class="covoiturage-grid">
-              <p><span class="icon">📅</span> <strong>Date:</strong> {{ covoiturage.date }}</p>
-              <p><span class="icon">⏰</span> <strong>Heure:</strong> {{ covoiturage.heureDepart[0] }}:{{
+              <p><span class="icon">📅</span> <strong>Date : </strong> &nbsp; {{ covoiturage.date }}</p>
+              <p><span class="icon">⏰</span> <strong>Heure : </strong> &nbsp; {{ covoiturage.heureDepart[0] }}:{{
                 covoiturage.heureDepart[1] }}</p>
-              <p><span class="icon">🪑</span> <strong>Places:</strong> {{ covoiturage.nbPlace }}</p>
-              <p><span class="icon">💶</span> <strong>Prix:</strong> {{ covoiturage.prixPersonne }} €</p>
+              <p><span class="icon">🪑</span> <strong>Places : </strong> &nbsp; {{ covoiturage.nbPlace }}</p>
+              <p><span class="icon">💶</span> <strong>Prix : </strong> &nbsp; {{ covoiturage.prixPersonne }} <img
+                  src="../../assets/images/leaf.png" class="credit-icon" /></p>
             </div>
             <!-- Bouton Participer intégré dans la carte -->
             <div class="participer-container">
@@ -163,7 +164,7 @@ export default {
       destination,
       date,
       covoiturages,
-      selectedCovoiturage,  // Ajouté pour lier à la vue
+      selectedCovoiturage,
       openModal,
       handleCreateRide,
       searchRides: rechercheCovoiturages,
@@ -320,5 +321,27 @@ button:hover {
 
 .participation-validee svg {
   margin-right: 8px;
+}
+
+.credit-icon {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+}
+
+@media screen and (max-width: 768px) {
+  .search-bar {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .covoiturage-card {
+    flex-direction: column;
+    padding: 25px;
+  }
+
+  .covoiturage-details {
+    flex-direction: column;
+  }
 }
 </style>

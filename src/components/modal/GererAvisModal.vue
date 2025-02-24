@@ -100,8 +100,8 @@ export default {
 }
 
 .modal-content > div {
-  max-height: 400px; /* Taille limite pour les avis */
-  overflow-y: auto; /* Ajoute l'ascenseur vertical si nécessaire */
+  max-height: 400px; 
+  overflow-y: auto; 
 }
 
 /* Liste des avis */

@@ -28,7 +28,7 @@
             <input id="couleur" type="text" v-model="couleur" placeholder="Couleur" required />
           </div>
           <div>
-            <label for="datePremiereImmatriculation">Date immatriculation</label>
+            <label for="datePremiereImmatriculation">Date immat.</label>
             <input id="datePremiereImmatriculation" type="date" v-model="datePremiereImmatriculation"
               placeholder="Date première immatriculation" required />
           </div>
@@ -197,5 +197,11 @@ button {
 
 .close-button:hover {
   background-color: #cc0000;
+}
+
+@media screen and (max-width: 768px) {
+  h2 {
+    margin-top: 2rem;
+  }
 }
 </style>

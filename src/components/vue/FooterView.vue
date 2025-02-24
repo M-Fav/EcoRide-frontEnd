@@ -86,11 +86,6 @@ export default {
 }
 
 @media screen and (max-width: 768px) {
-  .footer {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-  }
 
   .footer-content {
     font-size: 9px;

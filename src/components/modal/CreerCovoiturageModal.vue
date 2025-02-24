@@ -27,7 +27,7 @@
             <input id="places" type="number" v-model="nbPlace" placeholder="Nombre de places" required />
           </div>
           <div>
-            <label for="prix">Prix par personne (€)</label>
+            <label for="prix">Prix par personne</label>
             <input id="prix" type="number" v-model="prixPersonne" placeholder="Prix par personne (€)" required />
           </div>
         </div>
@@ -52,7 +52,6 @@
                 @click="selectedVoitureId = voiture.voitureId">
                 <h4>{{ voiture.marque }} - {{ voiture.modele }}</h4>
                 <p><strong>Immatriculation:</strong> {{ voiture.immatriculation }}</p>
-                <p><strong>Énergie:</strong> {{ voiture.energie }}</p>
               </div>
             </div>
           </div>
@@ -255,7 +254,6 @@ input:focus {
 }
 
 .voiture-card {
-  padding: 15px;
   border: 2px solid #ddd;
   border-radius: 10px;
   text-align: center;
@@ -330,11 +328,31 @@ input:focus {
   width: 100%;
 }
 
-/* Centrage du titre "Choisir une voiture" */
 .voiture-title {
   text-align: center;
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 10px;
 }
+
+@media screen and (max-width: 768px) {
+  .modal-content {
+    padding: 1rem;
+    position: initial;
+  }
+
+  h2 {
+    margin-top: 2rem;
+  }
+
+  .voiture-cards {
+    max-height: 120px;
+    overflow-y: auto;
+  }
+
+  .voiture-card {
+    font-size: small;
+  }
+}
+
 </style>
