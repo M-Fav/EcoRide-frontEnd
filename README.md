@@ -1,17 +1,27 @@
-## Installer node.js
+Pour installer L'environnement local, installer docker desktop.
+Ensuite se mettre a la racine du projet.
+Ensuite faire la commande : docker build -t ecoride-front .
+Pour lancer le container faire la commande : docker run -d -p 8081:8081 --name ecoride-front ecoride-front
+Accéder au localhost indiqué dans les logs ou Docker desktop.
 
-## Installer npm
+# 🚀 Installation de l'environnement local
 
-### npm install
-### npm install vue-router
-### npm install axios
-### npm install pinia
-### npm install dayjs
-### npm install chart.js
-### npm install nexttick
-```
-Pour un echange avec la base de donnée en local, se rendre dans le fichier backend-api.js et décommenter l'url de pointage sur le localhost
-```
-## Lancement de l'application:
-### npm run serve
-``
+## 🛠️ Prérequis
+- Installer **Docker Desktop** 🐳
+
+## 📝 Étapes d'installation
+
+1. 📂 Se placer à la racine du projet :  
+   cd /chemin/vers/le/projet
+
+2. 🏗️ Construire l'image Docker :
+    ```bash
+   docker build -t ecoride-front .
+
+3. ▶️ Lancer le container Docker :
+   ```bash
+   docker run -d -p 8081:8081 --name ecoride-front ecoride-front
+
+4. 🌐 Accéder à l'application via :
+   * Le localhost indiqué dans les logs de la console 🖥️
+   * Ou via l'interface de Docker Desktop 🐳
