@@ -4,10 +4,10 @@
 
     <!-- Barre de recherche -->
     <div class="search-bar">
-      <input type="text" v-model="depart" placeholder="Lieu de départ" />
-      <input type="text" v-model="destination" placeholder="Destination" />
+      <input type="text" v-model="depart" placeholder="Lieu de départ" maxlength="50" />
+      <input type="text" v-model="destination" placeholder="Destination" maxlength="50"/>
       <input type="date" v-model="date" />
-      <button @click="searchRides">Rechercher</button>
+      <button @click="rechercheCovoiturages">Rechercher</button>
       <button class="create-btn" @click="openModal">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 5V19M5 12H19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -93,13 +93,17 @@ export default {
     const covoiturages = ref([]);
     const selectedCovoiturage = ref(null);
 
+    const sanitizeInput = (input) => {
+      return input.replace(/[<>'"/;`\\]/g, "");
+    };
+
     // Fonction de recherche
     const rechercheCovoiturages = async () => {
       try {
         const credentials = {
           utilisateurId: user.value ? user.value.utilisateurId : "",
-          lieuDepart: depart.value,
-          lieuArrivee: destination.value,
+          lieuDepart: sanitizeInput(depart.value),
+          lieuArrivee: sanitizeInput(destination.value),
           date: dayjs(date.value, "YYYY-MM-DD").format("DD-MM-YYYY")
         };
 
@@ -167,7 +171,7 @@ export default {
       selectedCovoiturage,
       openModal,
       handleCreateRide,
-      searchRides: rechercheCovoiturages,
+      rechercheCovoiturages,
       selectCovoiturage,
       participerCovoiturage
     };
@@ -215,22 +219,13 @@ button:hover {
 
 .covoiturages-view {
   margin: 0 auto;
-  /* Centre la vue */
   padding: 40px;
-  /* Augmente l’espace intérieur */
 }
 
 .results-title {
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 10px;
-}
-
-.covoiturage-card {
-  background: #f4f4f4;
-  padding: 15px;
-  margin: 10px 0;
-  border-radius: 5px;
 }
 
 .covoiturage-details {
