@@ -20,7 +20,7 @@ export async function ecorideService(credentials, endpoint, method, token) {
     if (token) {
       config.headers = {
         Authorization: `Bearer ${token}`,
-        //Authorization: 'Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJtZWhkaSIsImlhdCI6MTczOTcyNjg3NCwiZXhwIjoxNzM5ODEzMjc0fQ.ZUcWcP3MEQfrYAv3JNBSWMyizOyh57xNkQIJiB2X5Twuhza04TvFPPDUr068smpb',
+      
       };
     }
 
