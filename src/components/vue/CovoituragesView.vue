@@ -94,7 +94,7 @@ export default {
     const selectedCovoiturage = ref(null);
 
     const sanitizeInput = (input) => {
-      return input.replace(/[<>'"/;`\\]/g, "");
+      return input.replace(/[<>"/;`\\]/g, "");
     };
 
     // Fonction de recherche

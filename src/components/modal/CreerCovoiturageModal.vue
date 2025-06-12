@@ -111,17 +111,14 @@ export default {
     // Contrôler l'affichage de la modale de création de voiture
     const showCreerVoitureModal = ref(false);
 
-    // Méthode pour ouvrir la modale de création de voiture
     const openCreateCarModal = () => {
       showCreerVoitureModal.value = true;
     };
 
-    // Méthode pour fermer la modale de création de voiture
     const closeCreateCarModal = () => {
       showCreerVoitureModal.value = false;
     };
 
-    // Récupérer les voitures de l'utilisateur avec un loader
     const fetchVoitures = async () => {
       isLoading.value = true;
       try {
@@ -135,19 +132,23 @@ export default {
       }
     };
 
-    onMounted(fetchVoitures);  // Appel initial pour récupérer les voitures à l'ouverture du composant
+    onMounted(fetchVoitures);
 
-    // Fonction pour fermer la modale principale
     const closeModal = () => {
       emit("close");
     };
 
-    // Fonction pour créer un covoiturage
+    const sanitizeInput = (input) => {
+      const div = document.createElement("div");
+      div.appendChild(document.createTextNode(input));
+      return div.innerHTML;
+    };
+
     const createRide = async () => {
       try {
         const credentials = {
-          lieuDepart: lieuDepart.value,
-          lieuArrivee: lieuArrivee.value,
+          lieuDepart: sanitizeInput(lieuDepart.value),
+          lieuArrivee: sanitizeInput(lieuArrivee.value),
           utilisateurId: utilisateurId.value,
           date: dayjs(date.value, "YYYY-MM-DD").format("DD-MM-YYYY"),
           heureDepart: heureDepart.value ? `${heureDepart.value}:00` : null,
@@ -180,7 +181,7 @@ export default {
       showCreerVoitureModal,
       openCreateCarModal,
       closeCreateCarModal,
-      fetchVoitures,  // Inclure la méthode pour la récupération des voitures
+      fetchVoitures,
     };
   },
 };

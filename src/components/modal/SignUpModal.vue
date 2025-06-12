@@ -42,6 +42,7 @@
           <label for="photo">Photo</label>
           <input id="photo" type="file" @change="handleFileUpload" />
         </div>
+        <p v-if="error" class="error">{{ error }}</p>
         <button class="btn-vert btn-signup" type="submit">S'inscrire</button>
       </form>
       <button class="btn-rouge btn-close-position" @click="closeModal">Fermer</button>
@@ -66,7 +67,6 @@ export default {
     },
   },
   setup(props, { emit }) {
-    // Déclarations des variables réactives
     const pseudo = ref("");
     const password = ref("");
     const email = ref("");
@@ -76,22 +76,74 @@ export default {
     const dateNaissance = ref("");
     const adresse = ref("");
     const telephone = ref("");
+    const error = ref(null);
     const authStore = useAuthStore();
 
+    // Regex et sanitize
+    const pseudoRegex = /^[a-zA-Z0-9_]{3,20}$/;
+    const nameRegex = /^[a-zA-Zàâäéèêëïîôöùûüç' -]{2,50}$/i;
+    const phoneRegex = /^[0-9+\-\s]{6,20}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const sanitize = (str) => str.trim().replace(/[<>{}()$]/g, "");
 
-    // Fonction pour gérer l'inscription
+
     const signUp = async () => {
+      error.value = null;
+
+      //Variables sécurisées
+      const cleanPseudo = sanitize(pseudo.value);
+      const cleanPassword = password.value.trim();
+      const cleanEmail = email.value.trim();
+      const cleanNom = sanitize(nom.value);
+      const cleanPrenom = sanitize(prenom.value);
+      const cleanAdresse = sanitize(adresse.value);
+      const cleanTelephone = telephone.value.trim();
+
+      if (!pseudoRegex.test(cleanPseudo)) {
+        error.value = "Le pseudo doit contenir 3 à 20 caractères alphanumériques.";
+        return;
+      }
+      if (cleanPassword.length < 6) {
+        error.value = "Le mot de passe doit contenir au moins 6 caractères.";
+        return;
+      }
+      if (!emailRegex.test(cleanEmail)) {
+        error.value = "L'adresse email n'est pas valide.";
+        return;
+      }
+      if (!nameRegex.test(cleanNom)) {
+        error.value = "Le nom doit contenir 2 à 50 caractères alphanumériques ou contient des caractères invalides.";
+        return;
+      }
+      if (!nameRegex.test(cleanPrenom)) {
+        error.value = "Le prénom doit contenir 2 à 50 caractères alphanumériques ou contient des caractères invalides.";
+        return;
+      }
+      if (!dayjs(dateNaissance.value, "YYYY-MM-DD", true).isValid()) {
+        error.value = "La date de naissance est invalide.";
+        return;
+      }
+      if (cleanAdresse.length < 5) {
+        error.value = "L'adresse est trop courte.";
+        return;
+      }
+      if (!phoneRegex.test(cleanTelephone)) {
+        error.value = "Le numéro de téléphone est invalide.";
+        return;
+      }
+
+     
       try {
         const credentials = {
-          pseudo: pseudo.value,
-          password: password.value,
-          email: email.value,
-          nom: nom.value,
-          prenom: prenom.value,
+          pseudo: cleanPseudo,
+          password: cleanPassword,
+          email: cleanEmail,
+          nom: cleanNom,
+          prenom: cleanPrenom,
           photo: photo.value,
-          dateNaissance: dayjs(dateNaissance.value, "YYYY-MM-DD").format("YYYY-MM-DD"),
-          adresse: adresse.value,
-          telephone: telephone.value,
+          dateNaissance: dayjs(dateNaissance.value).format("YYYY-MM-DD"),
+          adresse: cleanAdresse,
+          telephone: cleanTelephone,
           role: props.role,
           statut: 'ACTIF',
         };
@@ -106,7 +158,8 @@ export default {
 
         closeModal();
       } catch (errorMessage) {
-        console.error("Erreur lors de la connexion :", errorMessage);
+        console.error("Erreur lors de l'inscription :", errorMessage);
+        error.value = "Erreur lors de l'inscription. Veuillez réessayer.";
       }
     };
 
@@ -121,7 +174,6 @@ export default {
       emit('close');
     };
 
-    // Retourne les variables et fonctions pour les utiliser dans le template
     return {
       pseudo,
       password,
@@ -129,12 +181,13 @@ export default {
       nom,
       prenom,
       adresse,
+      telephone,
       photo,
+      dateNaissance,
+      error,
       signUp,
       handleFileUpload,
       closeModal,
-      dateNaissance,
-      telephone,
     };
   },
 };
@@ -160,7 +213,7 @@ export default {
 
 h2 {
   text-align: center;
-  margin-bottom: 20px;
+   margin-bottom: 20px;
 }
 
 .form-grid {
