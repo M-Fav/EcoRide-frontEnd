@@ -87,6 +87,12 @@ export default {
       "ESSENCE", "DIESEL", "ELECTRIQUE", "HYBRIDE"
     ]);
 
+    const sanitizeInput = (input) => {
+      const div = document.createElement("div");
+      div.appendChild(document.createTextNode(input));
+      return div.innerHTML;
+    };
+
     const closeModal = () => {
       emit("close");
     };
@@ -95,11 +101,11 @@ export default {
       try {
         const credentials = {
           marque: marque.value,
-          modele: modele.value,
+          modele: sanitizeInput(modele.value),
           utilisateurId: authStore.user.utilisateurId,
-          immatriculation: immatriculation.value,
+          immatriculation: sanitizeInput(immatriculation.value),
           energie: energie.value,
-          couleur: couleur.value,
+          couleur: sanitizeInput(couleur.value),
           datePremiereImmatriculation: dayjs(datePremiereImmatriculation.value, "YYYY-MM-DD").format("YYYY-MM-DD"),
         };
 
@@ -128,8 +134,6 @@ export default {
 };
 </script>
 
-
-
 <style scoped>
 .modal-overlay {
   position: fixed;
@@ -142,7 +146,6 @@ export default {
   align-items: center;
   justify-content: center;
 }
-
 
 h2 {
   margin-bottom: 20px;

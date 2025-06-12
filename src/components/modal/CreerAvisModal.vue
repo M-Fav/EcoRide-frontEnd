@@ -53,19 +53,29 @@
       const setRating = (star) => {
         rating.value = star;
       };
+
+      const sanitizeInput = (input) => {
+        const div = document.createElement("div");
+        div.appendChild(document.createTextNode(input));
+        return div.innerHTML;
+      };
   
       const createAvis = async () => {
         try {
+          const sanitizedComment = sanitizeInput(comment.value);
+
           const credentialsVoitures = { 
-            commentaire: comment.value,
+            commentaire: sanitizedComment,
             note: rating.value,
             covoitureurId: props.covoitureurId
           };
+
           const data = await ecorideService(credentialsVoitures, "/avis/createAvis", "POST", token.value);
           console.log(data)
         } catch (error) {
           console.error("Erreur lors de la récupération des voitures :", error);
         } 
+
         closeModal();
       };
   
